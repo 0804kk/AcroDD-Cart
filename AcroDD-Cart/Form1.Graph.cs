@@ -10,32 +10,32 @@ namespace AcroDD_Cart
 {
     public partial class Form1
     {
-        Chart[] voltageCharts = new Chart[4]; 
+        Chart[] voltageCharts = new Chart[4];
         private void InitGraph()
         {
             voltageCharts[0] = chart5;
             voltageCharts[1] = chart6;
             voltageCharts[2] = chart7;
             voltageCharts[3] = chart8;
-    
-            InitTimeChart(voltageCharts[0],  "Now", "Target", "Left Wheel Voltage");
-            InitTimeChart(voltageCharts[1],  "Now", "Target", "Left Steer Voltage");
-            InitTimeChart(voltageCharts[2],  "Now", "Target", "Right Wheel Voltage");
-            InitTimeChart(voltageCharts[3],  "Now", "Target","Right Steer Voltage");
-            
-            InitTimeChart(chart1,  "Now","Target","Angle");
+
+            InitTimeChart(voltageCharts[0], "Now", "Target", "Left Wheel Voltage");
+            InitTimeChart(voltageCharts[1], "Now", "Target", "Left Steer Voltage");
+            InitTimeChart(voltageCharts[2], "Now", "Target", "Right Wheel Voltage");
+            InitTimeChart(voltageCharts[3], "Now", "Target", "Right Steer Voltage");
+
+            InitTimeChart(chart1, "Now", "Target", "Angle");
             chart1.ChartAreas[0].AxisY.Title = "θ [rad]";
             //InitTimeChart(chart2, "Wheel", "Steer");
 
             //InitTimeChart(chart3,"Left","Right");
 
-            InitTimeChart(chart_dt, "Delta Time","","Delta Time");
+            InitTimeChart(chart_dt, "Delta Time", "", "Delta Time");
             chart_dt.Legends.Clear();
-            
+
             InitPositionChart(chart_position);
         }
 
-        private void InitTimeChart(Chart chart, string series1, string series2 = "",string title="")
+        private void InitTimeChart(Chart chart, string series1, string series2 = "", string title = "")
         {
             chart.Titles.Add(new Title(title));
             //chart.Legends.Clear();
@@ -50,7 +50,7 @@ namespace AcroDD_Cart
             }
             chart.Series[0].Color = Color.DodgerBlue;
             if (series2 != "")
-            chart.Series[1].Color = Color.IndianRed;
+                chart.Series[1].Color = Color.IndianRed;
         }
         private void InitPositionChart(Chart chart)
         {
@@ -60,19 +60,19 @@ namespace AcroDD_Cart
             chart.Series.Add("Estimated");
             chart.Series.Add("Target");
             chart.ChartAreas[0].AxisX.IsReversed = true;
-            chart.ChartAreas[0].AxisX.Title="Y [mm]";
-            chart.ChartAreas[0].AxisY.Title="X [mm]";
+            chart.ChartAreas[0].AxisX.Title = "Y [mm]";
+            chart.ChartAreas[0].AxisY.Title = "X [mm]";
 
             //chart.Legends[0].MaximumAutoSize = 28;
             //chart.Legends[0].IsDockedInsideChartArea=true;
             //chart.Legends[0].Position = new ElementPosition(70,10,30,20);
-                //= ChartPositionType.Bottom;
+            //= ChartPositionType.Bottom;
 
             for (int i = 0; i < chart.Series.Count; i++)
             {
                 chart.Series[i].MarkerStyle = MarkerStyle.Circle;
                 chart.Series[i].ChartType = SeriesChartType.Point;
-            chart.Series[i].MarkerSize = 4;
+                chart.Series[i].MarkerSize = 4;
             }
             chart.Series[0].Color = Color.DodgerBlue;
             chart.Series[1].Color = Color.IndianRed;
@@ -91,6 +91,7 @@ namespace AcroDD_Cart
                     {
                         voltageCharts[LorR * 2 + WorS].Series["Target"].Points.AddXY(time, targetEncoderRps[LorR, WorS]);
                         voltageCharts[LorR * 2 + WorS].Series["Now"].Points.AddXY(time, encoderRps[LorR, WorS]);
+
                     }
                 }
 
@@ -105,7 +106,6 @@ namespace AcroDD_Cart
 
                 chart_dt.Series["Delta Time"].Points.AddXY(time, dt);
             }
-
             if (cnt % 1 == 0)
             {
                 for (int i = 0; i < 2; i++)
@@ -140,6 +140,16 @@ namespace AcroDD_Cart
                 //chart2.ChartAreas[0].AxisX.Minimum = timeAxisMinimum;
                 //chart3.ChartAreas[0].AxisX.Minimum = timeAxisMinimum;
                 chart_dt.ChartAreas[0].AxisX.Minimum = timeAxisMinimum;
+                double max_dt = 0.0;
+                for (int i = pointCount - maxCount; i < chart_dt.Series[0].Points.Count; i++)
+                {
+                    var tmp = chart_dt.Series[0].Points[i].YValues[0];
+                    if (max_dt < tmp)
+                    {
+                        max_dt = tmp;
+                    }
+                }
+                chart_dt.ChartAreas[0].AxisY.Maximum = max_dt + 0.01;
             }
             if (pointCount == 1)
             {
