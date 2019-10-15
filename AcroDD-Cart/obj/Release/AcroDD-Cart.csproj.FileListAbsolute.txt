@@ -1,0 +1,10 @@
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\bin\Release\AcroDD-Cart.exe.config
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\bin\Release\AcroDD-Cart.exe
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\bin\Release\AcroDD-Cart.pdb
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\obj\Release\AcroDD-Cart.csprojAssemblyReference.cache
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\obj\Release\AcroDD_Cart.Form1.resources
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\obj\Release\AcroDD_Cart.Properties.Resources.resources
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\obj\Release\AcroDD-Cart.csproj.GenerateResource.cache
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\obj\Release\AcroDD-Cart.csproj.CoreCompileInputs.cache
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\obj\Release\AcroDD-Cart.exe
+G:\マイドライブ\研究室\Program\AcroDD-Cart_backup20190923\AcroDD-Cart\obj\Release\AcroDD-Cart.pdb
