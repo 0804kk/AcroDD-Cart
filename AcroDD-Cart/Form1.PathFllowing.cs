@@ -60,6 +60,47 @@ namespace AcroDD_Cart
 
             }
         }
+        public List<double[]> ConvertEqualIntervalPath(List<double[]> original)
+        {
+            Vector3 nowPoint;
+            nowPoint.X = (float)pathData[0][0];
+            nowPoint.Y = (float)pathData[0][1];
+            nowPoint.Z = (float)pathData[0][2];
+
+            int count = 0;
+            List<double[]> output = new List<double[]>();
+            while (true)
+            {
+                if (count == pathData.Count - 1)
+                {
+                    output.Add(original[count]);
+                    break;
+                }
+                float turningRadius = (float)Math.Sqrt(axisCenterFromRear * axisCenterFromRear + Constants.Wc * Constants.Wc);
+                Vector3 intersection = Vector3.Zero;
+                Vector3 point1;
+                Vector3 point2;
+                point1.X = (float)pathData[count][0];
+                point1.Y = (float)pathData[count][1];
+                point1.Z = (float)pathData[count][2] * turningRadius;
+
+                point2.X = (float)pathData[count + 1][0];
+                point2.Y = (float)pathData[count + 1][1];
+                point2.Z = (float)pathData[count + 1][2] * turningRadius;
+                var ret = calcIntersectionOfSphereAndLine(ref intersection, point1, point2, nowPoint, (float)20);
+                if (ret)
+                {
+                    double[] data = new double[3] { intersection.X, intersection.Y, intersection.Z / turningRadius };
+                    output.Add(data);
+                    nowPoint = intersection;
+                }
+                else
+                {
+                    count++;
+                }
+            }
+            return output;
+        }
         public void CreateCircleRandom()
         {
             double x = 0;
@@ -86,7 +127,7 @@ namespace AcroDD_Cart
                 {
                     x = radius - radius * Math.Cos((double)i / max * 2 * Math.PI);
                     y = -radius * Math.Sin((double)i / max * 2 * Math.PI);
-                    theta = maxAngle * Math.Sin((double)i / max * 2 * Math.PI);
+                    theta = maxAngle * Math.Sin((double)i / max * 4 * Math.PI);
 
                     double[] data = new double[3] { x, y, theta };
 
@@ -95,49 +136,9 @@ namespace AcroDD_Cart
                     pass = true;
                 }
             }
-            Vector3 nowPoint;
-            nowPoint.X = (float)pathData[0][0];
-            nowPoint.Y = (float)pathData[0][1];
-            nowPoint.Z = (float)pathData[0][2];
 
-            //Vector3 intersection = Vector3.Zero;
-            //Vector3 point1 = new Vector3(-3,8,0); 
-            //Vector3 point2 = new Vector3(2,0,0);
-            //Vector3 center = new Vector3(2.5f,4,0);
-            //var ret = calcIntersectionOfCurcleAndLine(ref intersection, point1, point2, center,ra);
-            //System.Console.WriteLine(ret+" " +intersection.X + "," + intersection.Y);
+            pathData2 = ConvertEqualIntervalPath(pathData);
 
-            int count = 0;
-            while (true)
-            {
-                if(count == pathData.Count-1)
-                {
-                    pathData2.Add(pathData[count]);
-                    break;
-                }
-                float turningRadius = (float)Math.Sqrt(axisCenterFromRear * axisCenterFromRear + Constants.Wc * Constants.Wc);
-                Vector3 intersection = Vector3.Zero;
-                Vector3 point1;
-                Vector3 point2;
-                point1.X = (float)pathData[count][0];
-                point1.Y = (float)pathData[count][1];
-                point1.Z = (float)pathData[count][2] * turningRadius;
-
-                point2.X = (float)pathData[count + 1][0];
-                point2.Y = (float)pathData[count + 1][1];
-                point2.Z = (float)pathData[count + 1][2] * turningRadius;
-                var ret = calcIntersectionOfSphereAndLine(ref intersection, point1, point2, nowPoint, (float)50);
-                if (ret)
-                {
-                    double[] data = new double[3] {intersection.X, intersection.Y, intersection.Z / turningRadius};
-                    pathData2.Add(data); 
-                    nowPoint = intersection;
-                }
-                else
-                {
-                    count++;
-                }
-            }
             System.Console.WriteLine("pathData1");
 
             Vector3 preVec = Vector3.Zero;
@@ -151,8 +152,8 @@ namespace AcroDD_Cart
                 vec.Y = (float)a[1];
                 vec.Z = (float)a[2] * turningRadius;
                 var diff = vec - preVec;
-                System.Console.WriteLine(diff.Length());
-                //System.Console.WriteLine(vec.X + "," + vec.Y + "," + vec.Z);
+                //System.Console.WriteLine(diff.Length());
+                System.Console.WriteLine(vec.X + "," + vec.Y + "," + vec.Z);
                 preVec = vec;
             }
 
@@ -167,8 +168,8 @@ namespace AcroDD_Cart
                 vec.Y = (float)a[1];
                 vec.Z = (float)a[2] * turningRadius;
                 var diff = vec - preVec;
-                System.Console.WriteLine(diff.Length());
-                //System.Console.WriteLine(vec.X + "," + vec.Y + "," + vec.Z);
+                //System.Console.WriteLine(diff.Length());
+                System.Console.WriteLine(vec.X + "," + vec.Y + "," + vec.Z);
                 preVec = vec;
             }
         }
