@@ -20,6 +20,7 @@ namespace AcroDD_Cart
 
 
         public List<double[]> pathData = new List<double[]>();
+        public List<double[]> pathData2 = new List<double[]>();
 
         double errorRadius = 10.0;//[mm]
         double interval = 10;
@@ -69,6 +70,7 @@ namespace AcroDD_Cart
             bool pass = false;
             int passCount = 0;
             int maxCount = 0;
+            //x,yが等間隔ではない円軌道を生成
             for (int i = 0; i < max + 1; i++)
             {
                 if (pass)
@@ -89,9 +91,50 @@ namespace AcroDD_Cart
                     maxCount = r.Next(1, 10);
                     pass = true;
                 }
-
-
             }
+            Vector3 nowPoint;
+            nowPoint.X = (float)pathData[0][0];
+            nowPoint.Y = (float)pathData[0][1];
+            nowPoint.Z = (float)pathData[0][2];
+
+            //Vector3 intersection = Vector3.Zero;
+            //Vector3 point1 = new Vector3(-3,8,0); 
+            //Vector3 point2 = new Vector3(2,0,0);
+            //Vector3 center = new Vector3(2.5f,4,0);
+            //var ret = calcIntersectionOfCurcleAndLine(ref intersection, point1, point2, center,ra);
+            //System.Console.WriteLine(ret+" " +intersection.X + "," + intersection.Y);
+
+            int count = 0;
+            while (true)
+            {
+                if(count == pathData.Count-1)
+                {
+                    pathData2.Add(pathData[count]);
+                    break;
+                }
+                Vector3 intersection = Vector3.Zero;
+                Vector3 point1;
+                Vector3 point2;
+                point1.X = (float)pathData[count][0];
+                point1.Y = (float)pathData[count][1];
+                point1.Z = (float)pathData[count][2];
+
+                point2.X = (float)pathData[count + 1][0];
+                point2.Y = (float)pathData[count + 1][1];
+                point2.Z = (float)pathData[count + 1][2];
+                var ret = calcIntersectionOfCurcleAndLine(ref intersection, point1, point2, nowPoint, (float)200);
+                if (ret)
+                {
+                    double[] data = new double[3] {intersection.X, intersection.Y, intersection.Z};
+                    pathData2.Add(data); 
+                    nowPoint = intersection;
+                }
+                else
+                {
+                    count++;
+                }
+            }
+            System.Console.WriteLine("pathData1");
 
             Vector3 preVec = Vector3.Zero;
             for (int i = 0; i < pathData.Count; i++)
@@ -107,8 +150,82 @@ namespace AcroDD_Cart
                 //System.Console.WriteLine(diff.Length());
                 System.Console.WriteLine(vec.X + "," + vec.Y + "," + vec.Z);
                 preVec = vec;
-
             }
+            System.Console.WriteLine("pathData2");
+
+            for (int i = 0; i < pathData2.Count; i++)
+            {
+                var a = pathData2[i];
+                Vector3 vec;
+                float turningRadius = (float)Math.Sqrt(axisCenterFromRear * axisCenterFromRear + Constants.Wc * Constants.Wc);
+
+                vec.X = (float)a[0];
+                vec.Y = (float)a[1];
+                vec.Z = (float)a[2] * turningRadius;
+                var diff = vec - preVec;
+                //System.Console.WriteLine(diff.Length());
+                System.Console.WriteLine(vec.X + "," + vec.Y + "," + vec.Z);
+                preVec = vec;
+            }
+        }
+        //線分と円の交点を返す（2点あるのが返すのはpoint2に近い方）交わらない場合はfalse
+        private bool calcIntersectionOfCurcleAndLine(ref Vector3 intersection, Vector3 point1, Vector3 point2,Vector3 center,float radius)
+        {
+            //http://godfoot.world.coocan.jp/circle-line.htm
+            //ax+by+c=0
+            float a = (point2.Y - point1.Y);
+            float b = (point1.X - point2.X);
+            float c = -(a * point1.X + b * point1.Y);
+            float L = (float)Math.Sqrt(Math.Pow(b, 2) + Math.Pow(a, 2));
+            Vector3 e;
+            e.X = -b / L;
+            e.Y = a / L;
+            Vector3 v;
+            v.X = -e.Y;
+            v.Y = e.X;
+            float k = -(a * center.X + b * center.Y + c) / (a * v.X + b * v.Y);
+            Vector3 H;
+            H.X = center.X + k * v.X;
+            H.Y = center.Y + k * v.Y;
+            if (radius < k) return false;//直線と円は交わらない
+            float S = (float)Math.Sqrt(Math.Pow(radius, 2) - Math.Pow(k, 2));
+            Vector3 inter1 = Vector3.Zero;//point2側
+            Vector3 inter2 = Vector3.Zero;//point1側
+            inter1.X = H.X + S * e.X;
+            inter1.Y = H.Y + S * e.Y;
+            inter2.X = H.X - S * e.X;
+            inter2.Y = H.Y - S * e.Y;
+            //System.Console.WriteLine(inter1.X + "," + inter1.Y);
+            //System.Console.WriteLine(inter2.X + "," + inter2.Y);
+
+            float upX, upY, downX, downY;
+            if (point1.X > point2.X)
+            {
+                upX = point1.X;
+                downX = point2.X;
+            }
+            else
+            {
+                upX = point2.X; 
+                downX = point1.X;
+            }
+            if (point1.Y > point2.Y)
+            {
+                upY = point1.Y;
+                downY = point2.Y;
+            }
+            else
+            {
+                upY = point2.Y;
+                downY = point1.Y;
+            }
+
+            if ((downX <= inter1.X) && (inter1.X <= upX) && (downY <= inter1.Y) && (inter1.Y <= upY)) //交点が線分の範囲内に入っているか
+            {
+                intersection = inter1;
+                return true;
+            }
+            else return false;
         }
         double length = 500;
         double curveRadius = 100;
