@@ -76,6 +76,12 @@
     <Compile Include="Form1.Log.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Form1.PathRecording.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.PathRecording.Designer.cs">
+      <DependentUpon>Form1.PathRecording.cs</DependentUpon>
+    </Compile>
     <Compile Include="Joypad.cs" />
     <Compile Include="Form1.PathFllowing.cs">
       <SubType>Form</SubType>

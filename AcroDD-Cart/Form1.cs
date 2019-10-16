@@ -125,9 +125,8 @@ namespace AcroDD_Cart
             DrawJoypad();
             DrawCart();
 
-            //CreateCircle();
+            CreateCircle();
             CreateCircleRandom();
-            //pf.CreateSquare();
 
         }
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -209,10 +208,6 @@ namespace AcroDD_Cart
             if (cnt == 0) { pre_time = DateTime.Now; }
 
             TimeSpan delt_time = now_time - pre_time; // 時間の差分を取得
-
-            //Console.WriteLine(delt_time.TotalMinutes); // 経過時間（分）
-            //Console.WriteLine(delt_time.TotalSeconds); // 経過時間（秒）
-            //Console.WriteLine(delt_time.TotalMilliseconds); // 経過時間（ミリ秒）
 
             dt = delt_time.TotalSeconds;//sec
             //System.Console.Write(dt+" ");
@@ -339,16 +334,20 @@ namespace AcroDD_Cart
             {
                 mode = ModeEnum.ManualMode;
                 groupBox_joypad.Enabled = false;
+                switchClutch(false);
+
             }
             else if (radioButton_auto.Checked)
             {
                 mode = ModeEnum.AutoMode;
                 groupBox_joypad.Enabled = false;
+                switchClutch(true);
             }
             else if (radioButton_joypad.Checked)
             {
                 mode = ModeEnum.JoypadMode;
                 groupBox_joypad.Enabled = true;
+                switchClutch(true);
             }
             textBox_mode.Text = mode.ToString();
             DrawJoypad();
@@ -372,5 +371,6 @@ namespace AcroDD_Cart
                 axisCenterFromRear = 0.0;
             }
         }
+
     }
 }
