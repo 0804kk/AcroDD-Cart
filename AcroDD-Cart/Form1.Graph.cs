@@ -64,7 +64,7 @@ namespace AcroDD_Cart
             chart.ChartAreas[0].AxisY.Title = "X [mm]";
 
             //chart.Legends[0].MaximumAutoSize = 28;
-            //chart.Legends[0].IsDockedInsideChartArea=true;
+            //chart.Legends[0].IsDockedInsideChartArea = true;
             //chart.Legends[0].Position = new ElementPosition(70,10,30,20);
             //= ChartPositionType.Bottom;
 
@@ -95,7 +95,7 @@ namespace AcroDD_Cart
                     }
                 }
 
-                chart1.Series["Target"].Points.AddXY(time, pf.targetPosition[2]);
+                chart1.Series["Target"].Points.AddXY(time, targetPosition[2]);
                 chart1.Series["Now"].Points.AddXY(time, cartAngle);
 
                 //chart2.Series["Wheel"].Points.AddXY(time, targetCasterOmega[0, 0]);
@@ -116,7 +116,7 @@ namespace AcroDD_Cart
                 System.Console.WriteLine("{0} {1} {2} ", max[0], min[0], cartPosition[0]);
                 chart_position.Series[0].Points.AddXY(cartPosition[1], cartPosition[0]);
                 //chart_position.Series[0].Points.AddXY(IdealCartPosition[1], IdealCartPosition[0]);
-                chart_position.Series[1].Points.AddXY(pf.targetPosition[1], pf.targetPosition[0]);
+                chart_position.Series[1].Points.AddXY(targetPosition[1], targetPosition[0]);
                 //if (cnt > 5)
                 {
                     chart_position.ChartAreas[0].AxisX.Maximum = Math.Floor(max[1]);

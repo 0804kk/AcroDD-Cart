@@ -89,8 +89,6 @@ namespace AcroDD_Cart
         bool deviceOpened = false;
         bool fileOpened = false;
 
-        PathFllowing pf = new PathFllowing();
-
         JoyPad pad = new JoyPad();
         JoyPad.JOYERR joyErr;
 
@@ -127,7 +125,8 @@ namespace AcroDD_Cart
             DrawJoypad();
             DrawCart();
 
-            pf.CreateCircle();
+            //CreateCircle();
+            CreateCircleRandom();
             //pf.CreateSquare();
 
         }
@@ -264,7 +263,7 @@ namespace AcroDD_Cart
                 GetTargetCartVelocityByJoypad();
             }else if (mode == ModeEnum.AutoMode)
             {
-                pf.CalcTargetVelocity(targetCartVelocity, ref targetCartAngularVelocity, cartPosition, cartAngle, dt);
+                CalcTargetVelocity(targetCartVelocity, ref targetCartAngularVelocity, cartPosition, cartAngle);
             }
 
 

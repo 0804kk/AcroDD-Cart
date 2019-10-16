@@ -49,7 +49,7 @@ namespace AcroDD_Cart
             headerList.Add(nameof(cartAngle));
             headerList.AddRange(GetArrayNameToList(nameof(IdealCartPosition), 2));
             headerList.Add(nameof(IdealCartAngle));
-            headerList.AddRange(GetArrayNameToList(nameof(pf.targetPosition), 3));
+            headerList.AddRange(GetArrayNameToList(nameof(targetPosition), 3));
 
             headerList.AddRange(GetArrayNameToList(nameof(cartVelocityRear), 2));
             headerList.Add(nameof(cartAngularVelocity));
@@ -82,7 +82,7 @@ namespace AcroDD_Cart
             logList.Add(cartAngle);
             logList.AddRange(GetValueToList(IdealCartPosition, 2));
             logList.Add(IdealCartAngle);
-            logList.AddRange(GetValueToList(pf.targetPosition, 3));
+            logList.AddRange(GetValueToList(targetPosition, 3));
 
 
             logList.AddRange(GetValueToList(cartVelocityRear, 2));
