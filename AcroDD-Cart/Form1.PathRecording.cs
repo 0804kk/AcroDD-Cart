@@ -383,7 +383,9 @@ namespace AcroDD_Cart
                 recoding = false;
                 button_record.Text = "Start Recoding";
                 List<double[]> pathData = new List<double[]>(recodingPathData);
-                AddToPathList(pathData, "RecodedPathData" + recodeNum);
+                List<double[]> pathData2 = new List<double[]>();
+                pathData2 = ConvertEqualIntervalPath(pathData);
+                AddToPathList(pathData2, "RecodedPathData" + recodeNum);
                 recodingPathData.Clear();
                 recodeNum++;
             }

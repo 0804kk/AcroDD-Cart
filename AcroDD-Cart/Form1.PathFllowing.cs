@@ -25,7 +25,7 @@ namespace AcroDD_Cart
         bool isEndPoint = false;
         public void CalcTargetVelocity(double[] tagVelo, ref double tagAngVelo, double[] nowPosition, double nowAngle)
         {
-            List<double[]> pathData = pathDataList[0];
+            List<double[]> pathData = pathDataList[listBox_path.SelectedIndex];
 
             targetPosition = pathData[nowIndex];
             diffPosition_vec.X = (float)(targetPosition[0] - nowPosition[0]);
