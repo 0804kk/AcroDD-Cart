@@ -5,16 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Numerics;
+using System.ComponentModel;
+
 
 namespace AcroDD_Cart
 {
     public partial class Form1
     {
         public List<List<double[]>> pathDataList = new List<List<double[]>>();
-
+        public BindingList<string> pathNameList = new BindingList<string>();
         //public List<double[]> pathData = new List<double[]>();
         //public List<double[]> pathData2 = new List<double[]>();
 
+        public void initPathRecoding()
+        {
+            listBox_path.DataSource = pathNameList;
+        }
         double interval = 10;
         double radius = 500;
         double maxAngle = Math.PI / 6.0;
@@ -34,7 +40,7 @@ namespace AcroDD_Cart
                 double[] data = new double[3] { x, y, theta };
                 pathData.Add(data);
             }
-            pathDataList.Add(pathData);
+            AddToPathList(pathData,"Circle");
         }
         public void CreateCircleRandom()
         {
@@ -75,7 +81,7 @@ namespace AcroDD_Cart
             }
 
             pathData2 = ConvertEqualIntervalPath(pathData);
-            pathDataList.Add(pathData2);
+            AddToPathList(pathData2,"Random Circle");
 
             System.Console.WriteLine("pathData1");
 
@@ -225,7 +231,7 @@ namespace AcroDD_Cart
             else return false;
         }
         //線分と円の交点を返す（2点あるのが返すのはpoint2に近い方）交わらない場合はfalse
-        private bool calcIntersectionOfCurcleAndLine(ref Vector3 intersection, Vector3 point1, Vector3 point2, Vector3 center, float radius)
+        private bool calcIntersectionOfCircleAndLine(ref Vector3 intersection, Vector3 point1, Vector3 point2, Vector3 center, float radius)
         {
             //http://godfoot.world.coocan.jp/circle-line.htm
             //ax+by+c=0
@@ -341,20 +347,56 @@ namespace AcroDD_Cart
                 pathData.Add(data);
             }
 
+            AddToPathList(pathData,"Square");
+
+        }
+
+        private void AddToPathList(List<double[]> pathData,string name)
+        {
             pathDataList.Add(pathData);
+            pathNameList.Add(name);
 
         }
 
 
-
-
+        List<double[]> recodingPathData = new List<double[]>();
+        private void RecordePath()
+        {
+            if (recoding)
+            {
+                double[] data = new double[3] { cartPosition[0], cartPosition[1], cartAngle};
+                recodingPathData.Add(data);
+            }
+        }
+        bool recoding = false;
+        int recodeNum = 1;
         private void button_record_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < pathDataList.Count; i++)
+            if (!recoding)
             {
-                listBox1.Items.Add("pathData"+(i+1));
+                recoding = true;
+                button_record.Text = "Stop Recoding";
 
             }
+            else
+            {
+                recoding = false;
+                button_record.Text = "Start Recoding";
+                List<double[]> pathData = new List<double[]>(recodingPathData);
+                AddToPathList(pathData, "RecodedPathData" + recodeNum);
+                recodingPathData.Clear();
+                recodeNum++;
+            }
+        }
+        private void listBox_path_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            chart_position.Series[1].Points.Clear();
+            foreach (var item in pathDataList[listBox_path.SelectedIndex])
+            {
+                chart_position.Series[1].Points.AddXY(item[1], item[0]);
+
+            }
+
         }
     }
 }

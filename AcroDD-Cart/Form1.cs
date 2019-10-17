@@ -125,8 +125,10 @@ namespace AcroDD_Cart
             DrawJoypad();
             DrawCart();
 
+            initPathRecoding();
             CreateCircle();
             CreateCircleRandom();
+            CreateSquare();
 
         }
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -256,9 +258,15 @@ namespace AcroDD_Cart
             if(mode == ModeEnum.JoypadMode)
             {
                 GetTargetCartVelocityByJoypad();
-            }else if (mode == ModeEnum.AutoMode)
+                RecordePath();
+            }
+            else if (mode == ModeEnum.AutoMode)
             {
                 CalcTargetVelocity(targetCartVelocity, ref targetCartAngularVelocity, cartPosition, cartAngle);
+            }
+            else if(mode == ModeEnum.ManualMode)
+            {
+                RecordePath();
             }
 
 
@@ -371,6 +379,7 @@ namespace AcroDD_Cart
                 axisCenterFromRear = 0.0;
             }
         }
+
 
     }
 }
