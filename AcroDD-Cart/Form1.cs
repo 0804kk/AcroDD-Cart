@@ -127,7 +127,7 @@ namespace AcroDD_Cart
 
             initPathRecoding();
             CreateCircle();
-            CreateCircleRandom();
+            CreateEqualIntervalCircle();
             CreateSquare();
 
         }

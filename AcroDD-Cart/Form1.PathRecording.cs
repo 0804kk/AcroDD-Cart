@@ -36,13 +36,13 @@ namespace AcroDD_Cart
             {
                 x = radius - radius * Math.Cos((double)i / max * 2 * Math.PI);
                 y = -radius * Math.Sin((double)i / max * 2 * Math.PI);
-                theta = maxAngle * Math.Sin((double)i / max * 4 * Math.PI);
+                theta = maxAngle * Math.Sin((double)i / max * 2 * Math.PI);
                 double[] data = new double[3] { x, y, theta };
                 pathData.Add(data);
             }
             AddToPathList(pathData,"Circle");
         }
-        public void CreateCircleRandom()
+        public void CreateEqualIntervalCircle()
         {
             List<double[]> pathData = new List<double[]>();
             List<double[]> pathData2 = new List<double[]>();
@@ -70,7 +70,7 @@ namespace AcroDD_Cart
                 {
                     x = radius - radius * Math.Cos((double)i / max * 2 * Math.PI);
                     y = -radius * Math.Sin((double)i / max * 2 * Math.PI);
-                    theta = maxAngle * Math.Sin((double)i / max * 4 * Math.PI);
+                    theta = maxAngle * Math.Sin((double)i / max * 2 * Math.PI);
 
                     double[] data = new double[3] { x, y, theta };
 
@@ -81,7 +81,7 @@ namespace AcroDD_Cart
             }
 
             pathData2 = ConvertEqualIntervalPath(pathData);
-            AddToPathList(pathData2,"Random Circle");
+            AddToPathList(pathData2, "Equal Interval Circle");
 
             System.Console.WriteLine("pathData1");
 

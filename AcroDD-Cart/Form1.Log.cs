@@ -36,7 +36,6 @@ namespace AcroDD_Cart
             }
             logFilePath = folderName + @"\" + now_time.ToString("yyyyMMdd#HHmmss#");
             textBox_csvName.Text = Path.GetFileName(logFilePath);
-            MessageBox.Show(logFilePath);
         }
         private void WriteLogHeader()
         {

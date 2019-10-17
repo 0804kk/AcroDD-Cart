@@ -81,10 +81,17 @@ namespace AcroDD_Cart
         {
             for (int LorR = 0; LorR < 2; LorR++)//left:0 or right:1
             {
+                //補正あり
                 velo[LorR, wheel] = omega[LorR, wheel] * Constants.WheelRadius * Math.Cos(steerAngle[LorR])
                                   - (omega[LorR, steer] + cartAngularVelocity) * Constants.CasterOffset * Math.Sin(steerAngle[LorR]); //車輪前方向移動速度[mm/s]
                 velo[LorR, steer] = omega[LorR, wheel] * Constants.WheelRadius * Math.Sin(steerAngle[LorR])
                                   + (omega[LorR, steer] + cartAngularVelocity) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
+
+                //補正なし
+                //velo[LorR, wheel] = omega[LorR, wheel] * Constants.WheelRadius * Math.Cos(steerAngle[LorR])
+                //                  - (omega[LorR, steer] ) * Constants.CasterOffset * Math.Sin(steerAngle[LorR]); //車輪前方向移動速度[mm/s]
+                //velo[LorR, steer] = omega[LorR, wheel] * Constants.WheelRadius * Math.Sin(steerAngle[LorR])
+                //                  + (omega[LorR, steer] ) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
             }
         }
         private void CalcCartVelocity(double[] cartVeloRear, out double angularVelo, ref double angle, double dt, double[,] casterVelo)//逆運動学
