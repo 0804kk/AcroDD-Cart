@@ -176,8 +176,8 @@ namespace AcroDD_Cart
                     //this.Close();
                     throw;
                 }
+                WriteLogHeader();
             }
-            WriteLogHeader();
             
         }
 
