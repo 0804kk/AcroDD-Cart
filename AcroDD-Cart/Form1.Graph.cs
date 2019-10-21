@@ -106,14 +106,14 @@ namespace AcroDD_Cart
 
                 chart_dt.Series["Delta Time"].Points.AddXY(time, dt);
             }
-            if (cnt % 1 == 0)
+            if (cnt % 2 == 0)
             {
                 for (int i = 0; i < 2; i++)
                 {
                     if (min[i] > cartPosition[i]) min[i] = cartPosition[i];
                     if (max[i] < cartPosition[i]) max[i] = cartPosition[i];
                 }
-                System.Console.WriteLine("{0} {1} {2} ", max[0], min[0], cartPosition[0]);
+                //System.Console.WriteLine("{0} {1} {2} ", max[0], min[0], cartPosition[0]);
                 chart_position.Series[0].Points.AddXY(cartPosition[1], cartPosition[0]);
                 //chart_position.Series[0].Points.AddXY(IdealCartPosition[1], IdealCartPosition[0]);
                 chart_position.Series[1].Points.AddXY(targetPosition[1], targetPosition[0]);

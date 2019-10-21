@@ -58,7 +58,6 @@
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox7 = new System.Windows.Forms.TextBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button_start_stop = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart_position = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -120,6 +119,7 @@
             this.button_record = new System.Windows.Forms.Button();
             this.groupBox_recode = new System.Windows.Forms.GroupBox();
             this.label_pathList = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart_position)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_joypad)).BeginInit();
@@ -203,10 +203,6 @@
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(120, 15);
             this.textBox7.TabIndex = 0;
-            // 
-            // timer1
-            // 
-            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // button_start_stop
             // 
@@ -839,6 +835,10 @@
             this.label_pathList.TabIndex = 22;
             this.label_pathList.Text = "Path List";
             // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -918,7 +918,6 @@
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TextBox textBox6;
         private System.Windows.Forms.TextBox textBox7;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button button_start_stop;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart_position;
@@ -980,6 +979,7 @@
         private System.Windows.Forms.Button button_record;
         private System.Windows.Forms.GroupBox groupBox_recode;
         private System.Windows.Forms.Label label_pathList;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
