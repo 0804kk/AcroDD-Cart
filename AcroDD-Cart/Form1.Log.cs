@@ -52,6 +52,7 @@ namespace AcroDD_Cart
 
             headerList.AddRange(GetArrayNameToList(nameof(cartVelocityRear), 2));
             headerList.Add(nameof(cartAngularVelocity));
+            headerList.Add(nameof(cartAngularVelocityByResitrantCondition));
 
             headerList.AddRange(GetArrayNameToList(nameof(targetCartVelocity), 2));
             headerList.Add(nameof(targetCartAngularVelocity));
@@ -60,6 +61,10 @@ namespace AcroDD_Cart
             headerList.AddRange(GetArrayNameToList(nameof(targetEncoderRps), 2, 2));
             headerList.AddRange(GetArrayNameToList(nameof(casterOmega), 2, 2));
             headerList.AddRange(GetArrayNameToList(nameof(targetCasterOmega), 2,2));
+
+            headerList.AddRange(GetArrayNameToList(nameof(casterVelocity), 2, 2));
+            headerList.AddRange(GetArrayNameToList(nameof(targetCasterVelocity), 2, 2));
+
 
 
             headerList.AddRange(GetArrayNameToList(nameof(encoderRawValue), 2, 2));
@@ -86,6 +91,8 @@ namespace AcroDD_Cart
 
             logList.AddRange(GetValueToList(cartVelocityRear, 2));
             logList.Add(cartAngularVelocity);
+            logList.Add(cartAngularVelocityByResitrantCondition);
+
             logList.AddRange(GetValueToList(targetCartVelocity, 2));
             logList.Add(targetCartAngularVelocity);
 
@@ -93,6 +100,9 @@ namespace AcroDD_Cart
             logList.AddRange(GetValueToList(targetEncoderRps, 2, 2));
             logList.AddRange(GetValueToList(casterOmega, 2, 2));
             logList.AddRange(GetValueToList(targetCasterOmega, 2, 2));
+
+            logList.AddRange(GetValueToList(casterVelocity, 2, 2));
+            logList.AddRange(GetValueToList(targetCasterVelocity, 2, 2));
 
 
             logList.AddRange(GetValueToList(encoderRawValue, 2, 2));

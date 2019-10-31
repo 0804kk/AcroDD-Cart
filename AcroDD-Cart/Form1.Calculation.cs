@@ -76,7 +76,13 @@ namespace AcroDD_Cart
                 }
             }
         }
-
+        private void CalcCartAngularVelocityByResitrantCondition(out double angularVelo, double[,] omega, double[] steerAngle)
+        {
+            var a = (omega[left, steer] * Math.Cos(steerAngle[left]) - omega[right, steer] * Math.Cos(steerAngle[right])) * Constants.CasterOffset;
+            var b = (omega[left, wheel] * Math.Sin(steerAngle[left]) - omega[right, wheel] * Math.Sin(steerAngle[right])) * Constants.WheelRadius;
+            var c = (Math.Cos(steerAngle[right]) - Math.Cos(steerAngle[left])) * Constants.CasterOffset;
+            angularVelo = (a + b) / c;
+        }
         private void CalcCasterVelocity(double[,] velo, double[,] omega, double[] steerAngle)//文法上仕方なくLR両方計算　ジャグ配列使えばいける?
         {
             for (int LorR = 0; LorR < 2; LorR++)//left:0 or right:1
