@@ -370,20 +370,23 @@ namespace AcroDD_Cart
             {
                 mode = ModeEnum.ManualMode;
                 groupBox_joypad.Enabled = false;
-                switchClutch(false);
+                if(deviceOpened)
+                    switchClutch(false);
 
             }
             else if (radioButton_auto.Checked)
             {
                 mode = ModeEnum.AutoMode;
                 groupBox_joypad.Enabled = false;
-                switchClutch(true);
+                if(deviceOpened)
+                    switchClutch(true);
             }
             else if (radioButton_joypad.Checked)
             {
                 mode = ModeEnum.JoypadMode;
                 groupBox_joypad.Enabled = true;
-                switchClutch(true);
+                if(deviceOpened)
+                    switchClutch(true);
             }
             textBox_mode.Text = mode.ToString();
             DrawJoypad();
