@@ -53,6 +53,7 @@ namespace AcroDD_Cart
             headerList.AddRange(GetArrayNameToList(nameof(cartVelocityRear), 2));
             headerList.Add(nameof(cartAngularVelocity));
             headerList.Add(nameof(cartAngularVelocityByResitrantCondition));
+            headerList.Add(nameof(cartAngularVelocityByResitrantCondition2));
 
             headerList.AddRange(GetArrayNameToList(nameof(targetCartVelocity), 2));
             headerList.Add(nameof(targetCartAngularVelocity));
@@ -92,6 +93,7 @@ namespace AcroDD_Cart
             logList.AddRange(GetValueToList(cartVelocityRear, 2));
             logList.Add(cartAngularVelocity);
             logList.Add(cartAngularVelocityByResitrantCondition);
+            logList.Add(cartAngularVelocityByResitrantCondition2);
 
             logList.AddRange(GetValueToList(targetCartVelocity, 2));
             logList.Add(targetCartAngularVelocity);

@@ -360,7 +360,7 @@ namespace AcroDD_Cart
 
 
         List<double[]> recodingPathData = new List<double[]>();
-        private void RecordePath()
+        private void RecordPath()
         {
             if (recoding)
             {
@@ -390,10 +390,12 @@ namespace AcroDD_Cart
                 recodeNum++;
             }
         }
+        int selectedPathIndex = 0;
         private void listBox_path_SelectedIndexChanged(object sender, EventArgs e)
         {
+            selectedPathIndex = listBox_path.SelectedIndex;
             chart_position.Series[1].Points.Clear();
-            foreach (var item in pathDataList[listBox_path.SelectedIndex])
+            foreach (var item in pathDataList[selectedPathIndex])
             {
                 chart_position.Series[1].Points.AddXY(item[1], item[0]);
 

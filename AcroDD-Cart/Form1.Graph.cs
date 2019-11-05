@@ -89,8 +89,8 @@ namespace AcroDD_Cart
                 {
                     for (int WorS = 0; WorS < 2; WorS++)
                     {
-                        voltageCharts[LorR * 2 + WorS].Series["Target"].Points.AddXY(time, targetEncoderRps[LorR, WorS]);
-                        voltageCharts[LorR * 2 + WorS].Series["Now"].Points.AddXY(time, encoderRps[LorR, WorS]);
+                        voltageCharts[LorR * 2 + WorS].Series["Target"].Points.AddXY(time, casterVelocity[0, 1]);
+                        voltageCharts[LorR * 2 + WorS].Series["Now"].Points.AddXY(time, casterVelocity[1, 1]);
 
                     }
                 }

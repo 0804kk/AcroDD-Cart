@@ -70,6 +70,9 @@ namespace AcroDD_Cart
         double cartAngularVelocityDeg = 0.0;//[deg/s]
         double cartAngularVelocityByResitrantCondition = 0.0;//拘束条件（VyR=VyL）の関係を使って計算した台車旋回角速度[rad/s]
         double cartAngularVelocityDegByResitrantCondition = 0.0;//拘束条件（VyR=VyL）の関係を使って計算した台車旋回角速度[deg/s]
+        double cartAngularVelocityByResitrantCondition2 = 0.0;//
+        double cartAngularVelocityDegByResitrantCondition2 = 0.0;//
+
         double cartAngle = 0.0;//[rad]
         double cartAngleDeg = 0.0;//[deg]
         double[] cartPosition = new double[2];//台車の座標[mm, mm, rad]
@@ -149,6 +152,8 @@ namespace AcroDD_Cart
             }
             if (fileOpened)
                 sw.Close();
+            timer.Exit();
+
         }
 
         async private void Button_init_Click(object sender, EventArgs e)
@@ -217,10 +222,10 @@ namespace AcroDD_Cart
             DrawJoypad();
             //台車の描写
             DrawCart(); 
-            textBox_wheelVoltL.Text = targetCasterOmega[0, 0].ToString("0.00");
-            textBox_steerVoltL.Text = targetCasterOmega[0, 1].ToString("0.00");
-            textBox_wheelVoltR.Text = targetCasterOmega[1, 0].ToString("0.00");
-            textBox_steerVoltR.Text = targetCasterOmega[1, 1].ToString("0.00");
+            textBox_wheelVoltL.Text = casterVelocity[0, 0].ToString("0.00");
+            textBox_steerVoltL.Text = casterVelocity[0, 1].ToString("0.00");
+            textBox_wheelVoltR.Text = casterVelocity[1, 0].ToString("0.00");
+            textBox_steerVoltR.Text = casterVelocity[1, 1].ToString("0.00");
             textBox_steerAngleL.Text = steerAngleDeg[0].ToString("0.00");
             textBox_steerAngleR.Text = steerAngleDeg[1].ToString("0.00");
 
@@ -229,6 +234,7 @@ namespace AcroDD_Cart
             textBox_angle.Text = cartAngleDeg.ToString("000.00");
             textBox_angularVelo.Text = cartAngularVelocityDeg.ToString("000.00");
 
+            textBox_debug.Text = (casterVelocity[0, 1] - casterVelocity[1, 1]).ToString("0.00");
 
         }
         double dt = 0;
@@ -291,6 +297,7 @@ namespace AcroDD_Cart
             }
             CalcCasterOmegaFromEncoderRps(casterOmega, encoderRps);
             CalcCartAngularVelocityByResitrantCondition(out cartAngularVelocityByResitrantCondition, casterOmega, steerAngle);
+            CalcCartAngularVelocityByResitrantCondition_part2(out cartAngularVelocityByResitrantCondition2, casterOmega, steerAngle);
             CalcCasterVelocity(casterVelocity, casterOmega, steerAngle);
 
             //自己位置推定
@@ -301,7 +308,7 @@ namespace AcroDD_Cart
             if (mode == ModeEnum.JoypadMode)
             {
                 GetTargetCartVelocityByJoypad();
-                RecordePath();
+                RecordPath();
             }
             else if (mode == ModeEnum.AutoMode)
             {
@@ -309,7 +316,7 @@ namespace AcroDD_Cart
             }
             else if (mode == ModeEnum.ManualMode)
             {
-                RecordePath();
+                RecordPath();
             }
 
 
@@ -346,8 +353,10 @@ namespace AcroDD_Cart
             WriteLogData();
             Invoke(new delegate1(PlotGraph));
 
+
             //pre_time = now_time;
             cnt++;
+
         }
         public double GetPIDValue(double target, double control, double dt)
         {
@@ -365,7 +374,6 @@ namespace AcroDD_Cart
         private void Button_exit_Click(object sender, EventArgs e)
         {
             this.Close();
-            
         }
 
         private void RadioButton_mode_CheckedChanged(object sender, EventArgs e)

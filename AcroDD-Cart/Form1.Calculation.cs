@@ -83,15 +83,22 @@ namespace AcroDD_Cart
             var c = (Math.Cos(steerAngle[right]) - Math.Cos(steerAngle[left])) * Constants.CasterOffset;
             angularVelo = (a + b) / c;
         }
+        private void CalcCartAngularVelocityByResitrantCondition_part2(out double angularVelo, double[,] omega, double[] steerAngle)
+        {
+            var a = (omega[left, steer] * Math.Sin(steerAngle[left]) - omega[right, steer] * Math.Sin(steerAngle[right])) * Constants.CasterOffset;
+            var b = (omega[left, wheel] * Math.Cos(steerAngle[left]) - omega[right, wheel] * Math.Cos(steerAngle[right])) * Constants.WheelRadius;
+            var c = (Math.Sin(steerAngle[right]) - Math.Sin(steerAngle[left])) * Constants.CasterOffset + Constants.Wc;
+            angularVelo = (a - b) / c;
+        }
         private void CalcCasterVelocity(double[,] velo, double[,] omega, double[] steerAngle)//文法上仕方なくLR両方計算　ジャグ配列使えばいける?
         {
             for (int LorR = 0; LorR < 2; LorR++)//left:0 or right:1
             {
                 //補正あり
                 velo[LorR, wheel] = omega[LorR, wheel] * Constants.WheelRadius * Math.Cos(steerAngle[LorR])
-                                  - (omega[LorR, steer] + cartAngularVelocity) * Constants.CasterOffset * Math.Sin(steerAngle[LorR]); //車輪前方向移動速度[mm/s]
+                                  - (omega[LorR, steer] + cartAngularVelocityByResitrantCondition2) * Constants.CasterOffset * Math.Sin(steerAngle[LorR]); //車輪前方向移動速度[mm/s]
                 velo[LorR, steer] = omega[LorR, wheel] * Constants.WheelRadius * Math.Sin(steerAngle[LorR])
-                                  + (omega[LorR, steer] + cartAngularVelocity) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
+                                  + (omega[LorR, steer] + cartAngularVelocityByResitrantCondition2) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
 
                 //補正なし
                 //velo[LorR, wheel] = omega[LorR, wheel] * Constants.WheelRadius * Math.Cos(steerAngle[LorR])

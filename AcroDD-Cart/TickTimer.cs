@@ -51,10 +51,14 @@ namespace AcroDD_Cart
             //_loop = false;
             _task.Suspend();
         }
+        public void Exit()
+        {
+            _task.Resume();
+            _loop = false;
+        }
 
         private void onTimer(object state)
         {
-            Console.WriteLine("aaaaa");
             Thread.Sleep(_dueTime);
             _sw.Restart();
             while (_loop)
@@ -69,6 +73,8 @@ namespace AcroDD_Cart
                 // 200msecの間、ちょうどになるまでループで待つ
                 while (true)
                 {
+                    if (!_loop) break;
+                    //Console.WriteLine(_sw.ElapsedMilliseconds);
                     if (_sw.ElapsedMilliseconds >= msec + rest)
                     {
                         break;
