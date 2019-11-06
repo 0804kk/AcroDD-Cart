@@ -115,10 +115,15 @@ namespace AcroDD_Cart
             cartVeloMachine[1] = (casterVelo[right, wheel] - casterVelo[left, wheel]) * 0.0 / Constants.Wc
                                + (casterVelo[right, steer] + casterVelo[left, steer]) / 2.0;
             angularVelo = (casterVelo[right, wheel] - casterVelo[left, wheel]) / Constants.Wc;
+            cartAngularVelocityTan = Math.Atan(angularVelo);
 
             angle += angularVelo * dt;
             if (angle > Math.PI) angle -= 2 * Math.PI;
             else if (angle <= -Math.PI) angle += 2 * Math.PI;
+
+           cartAngleTan += cartAngularVelocityTan * dt;
+            if (cartAngleTan > Math.PI) cartAngleTan -= 2 * Math.PI;
+            else if (cartAngleTan <= -Math.PI) cartAngleTan += 2 * Math.PI;
 
             //System.Console.WriteLine("{0} {1}", angularVelo, angle);
 

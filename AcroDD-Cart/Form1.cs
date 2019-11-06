@@ -68,6 +68,7 @@ namespace AcroDD_Cart
         double[] cartVelocityRear = new double[2];//[mm/s, mm/s]
         double cartAngularVelocity = 0.0;//[rad/s]
         double cartAngularVelocityDeg = 0.0;//[deg/s]
+        double cartAngularVelocityTan = 0.0;//[rad/s]
         double cartAngularVelocityByResitrantCondition = 0.0;//拘束条件（VyR=VyL）の関係を使って計算した台車旋回角速度[rad/s]
         double cartAngularVelocityDegByResitrantCondition = 0.0;//拘束条件（VyR=VyL）の関係を使って計算した台車旋回角速度[deg/s]
         double cartAngularVelocityByResitrantCondition2 = 0.0;//
@@ -75,6 +76,7 @@ namespace AcroDD_Cart
 
         double cartAngle = 0.0;//[rad]
         double cartAngleDeg = 0.0;//[deg]
+        double cartAngleTan = 0.0;//[rad]
         double[] cartPosition = new double[2];//台車の座標[mm, mm, rad]
         double[] cartPositionRear = new double[2] { 0.0, 0.0};//台車後輪の座標[mm, mm, rad]
         double[] cartPositionCenter = new double[2];//台車中心の座標[mm, mm, rad]
