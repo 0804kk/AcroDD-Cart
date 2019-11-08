@@ -66,6 +66,8 @@ namespace AcroDD_Cart
         double[,] casterVelocity = new double[2,2];//[mm/s]
         //double[] casterPosition = new double[2];
         double[] cartVelocityRear = new double[2];//[mm/s, mm/s]
+        double[] cartVelocityCenter = new double[2];//[mm/s, mm/s]
+        double[] cartVelocityFront = new double[2];//[mm/s, mm/s]
         double cartAngularVelocity = 0.0;//[rad/s]
         double cartAngularVelocityDeg = 0.0;//[deg/s]
         double cartAngularVelocityTan = 0.0;//[rad/s]
@@ -76,7 +78,7 @@ namespace AcroDD_Cart
 
         double cartAngle = 0.0;//[rad]
         double cartAngleDeg = 0.0;//[deg]
-        double cartAngleTan = 0.0;//[rad]
+        double cartAngleTan  = 0.0;//[rad]
         double[] cartPosition = new double[2];//台車の座標[mm, mm, rad]
         double[] cartPositionRear = new double[2] { 0.0, 0.0};//台車後輪の座標[mm, mm, rad]
         double[] cartPositionCenter = new double[2];//台車中心の座標[mm, mm, rad]
@@ -261,7 +263,7 @@ namespace AcroDD_Cart
             //Console.WriteLine(dt);
             sw1.Reset();
             sw1.Start();//ストップウォッチを開始する
-
+            //Console.WriteLine(System.Diagnostics.Stopwatch.Frequency+" " + System.Diagnostics.Stopwatch.IsHighResolution);
 
 
 
@@ -303,8 +305,8 @@ namespace AcroDD_Cart
             CalcCasterVelocity(casterVelocity, casterOmega, steerAngle);
 
             //自己位置推定
-            CalcCartVelocity(cartVelocityRear, out cartAngularVelocity, ref cartAngle, dt, casterVelocity);
-            CalcCartPosition(cartPositionRear, cartPositionCenter, cartPositionFront, dt, cartVelocityRear, cartAngle);
+            CalcCartVelocity(cartVelocityRear,cartVelocityCenter,cartVelocityFront, out cartAngularVelocity, ref cartAngle, dt, casterVelocity);
+            CalcCartPosition(cartPositionRear, cartPositionCenter, cartPositionFront, dt, cartVelocityRear, cartVelocityCenter, cartVelocityFront, cartAngle);
 
             //台車目標速度決定
             if (mode == ModeEnum.JoypadMode)

@@ -89,11 +89,19 @@ namespace AcroDD_Cart
                 {
                     for (int WorS = 0; WorS < 2; WorS++)
                     {
-                        voltageCharts[LorR * 2 + WorS].Series["Target"].Points.AddXY(time, casterVelocity[0, 1]);
-                        voltageCharts[LorR * 2 + WorS].Series["Now"].Points.AddXY(time, casterVelocity[1, 1]);
+                        //voltageCharts[LorR * 2 + WorS].Series["Target"].Points.AddXY(time, casterVelocity[0, 1]);
+                        //voltageCharts[LorR * 2 + WorS].Series["Now"].Points.AddXY(time, casterVelocity[1, 1]);
 
                     }
                 }
+
+                for (int i = 0; i < 2; i++)
+                {
+                    voltageCharts[i].Series["Target"].Points.AddXY(time, targetCartVelocity[i]);
+                    voltageCharts[i].Series["Now"].Points.AddXY(time, cartVelocityCenter[i]);
+                }
+                voltageCharts[2].Series["Target"].Points.AddXY(time, targetCartAngularVelocity);
+                voltageCharts[2].Series["Now"].Points.AddXY(time, cartAngularVelocity);
 
                 chart1.Series["Target"].Points.AddXY(time, targetPosition[2]);
                 chart1.Series["Now"].Points.AddXY(time, cartAngle);

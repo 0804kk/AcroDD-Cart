@@ -35,7 +35,7 @@ namespace AcroDD_Cart
             if (joyErr == JoyPad.JOYERR.NOERROR)
             {
                 pad.GetPosEx(Constants.padIndex);
-                padY = -((float)pad.JoyInfoEx.dwXpos - 32767f)/32768f;
+                padY = -((float)pad.JoyInfoEx.dwXpos - 32767f) / 32768f;
                 padX = -((float)pad.JoyInfoEx.dwYpos - 32767f) / 32768f;
             }
 
@@ -46,9 +46,11 @@ namespace AcroDD_Cart
             var mauseY = cp.Y - groupBox_joypad.Location.Y - pictureBox_joypad.Location.Y;
 
             //System.Console.WriteLine(pad.JoyInfoEx.dwFlags + " " + pad.JoyInfoEx.dwButtons);
-            if (pad.JoyInfoEx.dwButtons == 32) joyValueZ = -1.0;
-            else if (pad.JoyInfoEx.dwButtons == 16) joyValueZ = 1.0;
-            else joyValueZ = 0.0;
+            if (joyErr == JoyPad.JOYERR.NOERROR) { 
+                if (pad.JoyInfoEx.dwButtons == 32) joyValueZ = -1.0;
+                else if (pad.JoyInfoEx.dwButtons == 16) joyValueZ = 1.0;
+                else joyValueZ = 0.0;
+            }
             if (padDraged)
             {
                 joyValue.X = -(mauseY - pictureBox_joypad.Width / 2.0) / (frameDiameter / 2.0);
@@ -172,12 +174,13 @@ namespace AcroDD_Cart
 
             int centerX = pictureBox_cart.Width/2;
             int centerY = pictureBox_cart.Height/2;
+            var angle = cartAngle;
+            //var angle = 0;
+            var cartAngleDraw = -angle + Math.PI / 2;
 
-            var cartAngleDraw = -cartAngle + Math.PI / 2;
 
-
-            PointF[] casterPosition = { new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) - casterInterval / 2 * (float)Math.Cos(cartAngle), centerY + cartLength/2* (float)Math.Sin(cartAngleDraw) - casterInterval / 2 * (float)Math.Sin(-cartAngle)),
-                                        new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) + casterInterval / 2 * (float)Math.Cos(cartAngle ), centerY + cartLength/2* (float)Math.Sin(cartAngleDraw) + casterInterval / 2 * (float)Math.Sin(-cartAngle)) };
+            PointF[] casterPosition = { new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) - casterInterval / 2 * (float)Math.Cos(angle), centerY + cartLength/2* (float)Math.Sin(cartAngleDraw) - casterInterval / 2 * (float)Math.Sin(-angle)),
+                                        new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) + casterInterval / 2 * (float)Math.Cos(angle), centerY + cartLength/2* (float)Math.Sin(cartAngleDraw) + casterInterval / 2 * (float)Math.Sin(-angle)) };
             PointF[] caster1 = new PointF[2];
             PointF[] caster2 = new PointF[2];
             PointF cartFront = new PointF(centerX + cartFrameLength / 2 * (float)Math.Cos(cartAngleDraw - Math.PI), centerY + cartFrameLength / 2 * (float)Math.Sin(cartAngleDraw - Math.PI));
@@ -186,12 +189,17 @@ namespace AcroDD_Cart
 
             PointF[] veloVec1 = new PointF[2];
             PointF[] veloVec2 = new PointF[2];
+            PointF veloVecCart1 = new PointF(centerX , centerY );
+            PointF veloVecCart2 = new PointF(centerX - (float)cartVelocityRear[1], centerY - (float)cartVelocityRear[0]);
+
 
             Rectangle rectCenter = GetRectangle(centerX*2, centerY*2, 0, 0, 15);
 
             Pen pen = new Pen(Color.Black, casterWidth);
             Pen penVelo = new Pen(Color.Lime, 4);
             penVelo.EndCap = LineCap.ArrowAnchor;
+            Pen penVeloCart = new Pen(Color.Red, 4);
+            penVeloCart.EndCap = LineCap.ArrowAnchor;
             Pen penCart = new Pen(Color.SlateGray, cartWidth);
 
             //pictureBox_cart.BackColor = Color.PowderBlue;
@@ -219,8 +227,9 @@ namespace AcroDD_Cart
                 veloVec2[i].X = veloVec1[i].X - (int)(30 * casterOmega[i, 0]) * (float)Math.Cos(steerAngleDraw);
                 veloVec2[i].Y = veloVec1[i].Y - (int)(30 * casterOmega[i, 0]) * (float)Math.Sin(steerAngleDraw);
                 g.DrawLine(penVelo, veloVec1[i], veloVec2[i]);
-
             }
+            //g.DrawLine(penVeloCart, veloVecCart1, veloVecCart2);
+
 
             //リソースを解放する
             g.Dispose();
