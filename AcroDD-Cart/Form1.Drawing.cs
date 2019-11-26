@@ -156,16 +156,18 @@ namespace AcroDD_Cart
             if (joyValueZ > 1.0) joyValueZ = 1.0;
             if (joyValueZ < -1.0) joyValueZ = -1.0;
         }
-        private  void DrawCart()
+        private void DrawCart()
         {
             //描画先とするImageオブジェクトを作成する
             Bitmap canvas = new Bitmap(pictureBox_cart.Width, pictureBox_cart.Height);
             //ImageオブジェクトのGraphicsオブジェクトを作成する
             Graphics g = Graphics.FromImage(canvas);
+
             int ratio = 6;
             int casterInterval= (int)Constants.Wc / ratio;//Wc/2
             int cartWidth = casterInterval + 20;
             int cartLength = (int)Constants.Lc * 2 / ratio;//Lc
+            int centerFromRear = (int)axisCenterFromRear / ratio;
             int cartFrameLength = cartLength + 40;
 
             int casterWidth = 15;
@@ -179,23 +181,22 @@ namespace AcroDD_Cart
             var cartAngleDraw = -angle + Math.PI / 2;
 
 
-            PointF[] casterPosition = { new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) - casterInterval / 2 * (float)Math.Cos(angle), centerY + cartLength/2* (float)Math.Sin(cartAngleDraw) - casterInterval / 2 * (float)Math.Sin(-angle)),
-                                        new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) + casterInterval / 2 * (float)Math.Cos(angle), centerY + cartLength/2* (float)Math.Sin(cartAngleDraw) + casterInterval / 2 * (float)Math.Sin(-angle)) };
-            PointF[] caster1 = new PointF[2];
-            PointF[] caster2 = new PointF[2];
-            PointF cartFront = new PointF(centerX + cartFrameLength / 2 * (float)Math.Cos(cartAngleDraw - Math.PI), centerY + cartFrameLength / 2 * (float)Math.Sin(cartAngleDraw - Math.PI));
-            PointF cartRear = new PointF(centerX - cartFrameLength / 2 * (float)Math.Cos(cartAngleDraw - Math.PI), centerY - cartFrameLength / 2 * (float)Math.Sin(cartAngleDraw - Math.PI));
-            Rectangle[] rect = new Rectangle[2];
+            PointF[] casterPosition = { new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) - casterInterval / 2 * (float)Math.Sin(cartAngleDraw),
+                                                   centerY + cartLength / 2 * (float)Math.Sin(cartAngleDraw) + casterInterval / 2 * (float)Math.Cos(cartAngleDraw)),
+                                        new PointF(centerX + cartLength / 2 * (float)Math.Cos(cartAngleDraw) + casterInterval / 2 * (float)Math.Sin(cartAngleDraw),
+                                                   centerY + cartLength / 2 * (float)Math.Sin(cartAngleDraw) - casterInterval / 2 * (float)Math.Cos(cartAngleDraw)) };
+
+            PointF cartFront = new PointF(centerX - cartFrameLength / 2 * (float)Math.Cos(cartAngleDraw), centerY - cartFrameLength / 2 * (float)Math.Sin(cartAngleDraw));
+            PointF cartRear = new PointF(centerX + cartFrameLength / 2 * (float)Math.Cos(cartAngleDraw), centerY + cartFrameLength / 2 * (float)Math.Sin(cartAngleDraw));
 
             PointF[] veloVec1 = new PointF[2];
             PointF[] veloVec2 = new PointF[2];
-            PointF veloVecCart1 = new PointF(centerX , centerY );
-            PointF veloVecCart2 = new PointF(centerX - (float)cartVelocityRear[1], centerY - (float)cartVelocityRear[0]);
+            PointF[] casterVeloVec1 = new PointF[2];
+            PointF[] casterVeloVec2 = new PointF[2];
 
 
-            Rectangle rectCenter = GetRectangle(centerX*2, centerY*2, 0, 0, 15);
+            Rectangle rectCenter = GetRectangle(centerX * 2, centerY * 2, 0, 0, 15);
 
-            Pen pen = new Pen(Color.Black, casterWidth);
             Pen penVelo = new Pen(Color.Lime, 4);
             penVelo.EndCap = LineCap.ArrowAnchor;
             Pen penVeloCart = new Pen(Color.Red, 4);
@@ -212,28 +213,27 @@ namespace AcroDD_Cart
             g.FillEllipse(Brushes.DarkBlue, rectCenter);
             for (int i = 0; i < 2; i++)
             {
-                var steerAngleDraw = -steerAngle[i] + cartAngleDraw;
-                rect[i] = GetRectangle((int)casterPosition[i].X * 2, (int)casterPosition[i].Y * 2, 0, 0, 10);
-                caster1[i].X = casterPosition[i].X +(casterOffset + casterRadius) * (float)Math.Cos(steerAngleDraw);
-                caster1[i].Y = casterPosition[i].Y +(casterOffset + casterRadius) * (float)Math.Sin(steerAngleDraw);
 
-                caster2[i].X = casterPosition[i].X + (casterOffset - casterRadius) * (float)Math.Cos(steerAngleDraw);
-                caster2[i].Y = casterPosition[i].Y + (casterOffset - casterRadius) * (float)Math.Sin(steerAngleDraw);
-                g.DrawLine(pen, caster2[i], caster1[i]);
-                g.FillEllipse(Brushes.Crimson, rect[i]);//todo
-
-                veloVec1[i].X = casterPosition[i].X + (casterOffset) * (float)Math.Cos(steerAngleDraw);
-                veloVec1[i].Y = casterPosition[i].Y + (casterOffset) * (float)Math.Sin(steerAngleDraw);
-                veloVec2[i].X = veloVec1[i].X - (int)(30 * casterOmega[i, 0]) * (float)Math.Cos(steerAngleDraw);
-                veloVec2[i].Y = veloVec1[i].Y - (int)(30 * casterOmega[i, 0]) * (float)Math.Sin(steerAngleDraw);
+                var angleDraw = -steerAngle[i] + cartAngleDraw;
+                DrawCaster(casterPosition[i], angleDraw, casterWidth, casterRadius, casterOffset, g);
+                veloVec1[i].X = casterPosition[i].X + (casterOffset) * (float)Math.Cos(angleDraw);
+                veloVec1[i].Y = casterPosition[i].Y + (casterOffset) * (float)Math.Sin(angleDraw);
+                veloVec2[i].X = veloVec1[i].X - (int)(30 * casterOmega[i, 0]) * (float)Math.Cos(angleDraw);
+                veloVec2[i].Y = veloVec1[i].Y - (int)(30 * casterOmega[i, 0]) * (float)Math.Sin(angleDraw);
                 g.DrawLine(penVelo, veloVec1[i], veloVec2[i]);
+                casterVeloVec1[i].X = casterPosition[i].X;
+                casterVeloVec1[i].Y = casterPosition[i].Y;
+                casterVeloVec2[i].X = casterVeloVec1[i].X - ((int)(casterVelocity[i, 0]) * (float)Math.Cos(-cartAngleDraw) - (int)(casterVelocity[i, 1]) * (float)Math.Sin(-cartAngleDraw));
+                casterVeloVec2[i].Y = casterVeloVec1[i].Y + ((int)(casterVelocity[i, 0]) * (float)Math.Sin(-cartAngleDraw) + (int)(casterVelocity[i, 1]) * (float)Math.Cos(-cartAngleDraw));
+                g.DrawLine(penVeloCart, casterVeloVec1[i], casterVeloVec2[i]);
             }
-            //g.DrawLine(penVeloCart, veloVecCart1, veloVecCart2);
+            PointF veloVecCart1 = new PointF(centerX , centerY );
+            PointF veloVecCart2 = new PointF(centerX - (float)cartVelocityCenter[1], centerY - (float)cartVelocityCenter[0]);
+            g.DrawLine(penVeloCart, veloVecCart1, veloVecCart2);
 
 
             //リソースを解放する
             g.Dispose();
-            pen.Dispose();
             penVelo.Dispose();
             penCart.Dispose();
             myBrush.Dispose();
@@ -241,7 +241,30 @@ namespace AcroDD_Cart
             //PictureBox1に表示する
             pictureBox_cart.Image = canvas;
         }
+        private void DrawCaster(PointF steerShaft, double angle, int width, int radius, int offset, Graphics g)
+        {
 
+            PointF caster1 = new PointF();
+            PointF caster2 = new PointF();
+            Rectangle rect = new Rectangle();
+            Pen pen = new Pen(Color.Black, width);
+            rect = GetRectangle((int)steerShaft.X * 2, (int)steerShaft.Y * 2, 0, 0, 10);
+            caster1.X = steerShaft.X + (offset + radius) * (float)Math.Cos(angle);
+            caster1.Y = steerShaft.Y + (offset + radius) * (float)Math.Sin(angle);
+            caster2.X = steerShaft.X + (offset - radius) * (float)Math.Cos(angle);
+            caster2.Y = steerShaft.Y + (offset - radius) * (float)Math.Sin(angle);
+            g.DrawLine(pen, caster2, caster1);
+            g.FillEllipse(Brushes.Crimson, rect);//todo
+            pen.Dispose();
+
+        }
+        private PointF movePoint(PointF origin,int distance,double angle)
+        {
+            PointF ret = new PointF();
+            ret.X = origin.X + distance * (float)Math.Cos(angle);
+            ret.Y = origin.Y + distance * (float)Math.Sin(angle);
+            return ret;
+        }
         private void Button_up_Click(object sender, EventArgs e)
         {
             joyValue.X = 1.0;

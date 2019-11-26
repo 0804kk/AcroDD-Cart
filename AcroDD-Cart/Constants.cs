@@ -43,7 +43,7 @@ namespace AcroDD_Cart
 
 
         public const double MaxVelocity = 100.0;
-        public const double MaxAngularVelocity = 20.0 * (2.0 * Math.PI) / 360.0;
+        public const double MaxAngularVelocity = 5.0 * (2.0 * Math.PI) / 360.0;
 
         public static readonly double[] MotorToEncoderGearRatio = { 1.0, 2.0 };//wheel,steer
         public const double VoltagePerRps = 1.0 / (550.0 * 0.2 / 60.0);
