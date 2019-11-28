@@ -114,15 +114,15 @@ namespace AcroDD_Cart
             textBox_counter[1] = textBox6;
             textBox_counter[2] = textBox7;
             // タイマーの生成
-            timer = new TickTimer(OnElapsed_TimersTimer, Constants.ControllInterval);
+            //timer = new TickTimer(OnElapsed_TimersTimer, Constants.ControllInterval);
             timer1.Interval = Constants.ControllInterval;
             this.Text = "全方向移動プログラム(新)";
         }
-        TickTimer timer;
+        //TickTimer timer;
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            joyErr = pad.GetPosEx(Constants.padIndex);
+            joyErr = pad.GetPosEx(Constants.PadIndex);
 
             if (joyErr != JoyPad.JOYERR.NOERROR)
             {
@@ -156,7 +156,7 @@ namespace AcroDD_Cart
             }
             if (fileOpened)
                 sw.Close();
-            timer.Exit();
+            //timer.Exit();
 
         }
 
@@ -196,7 +196,7 @@ namespace AcroDD_Cart
             if (start)
             {
                 timer1.Stop();
-                timer.Stop();
+                //timer.Stop();
                 button_start_stop.Text = "Start";
                 //time = 0;
                 cnt = 0;
@@ -205,10 +205,10 @@ namespace AcroDD_Cart
             else
             {
                 timer1.Start();
-                if (startCnt == 0) 
-                    timer.Start();
-                else
-                    timer.Restart();
+                //if (startCnt == 0) 
+                //    timer.Start();
+                //else
+                //    timer.Restart();
                 startCnt++;
                 button_start_stop.Text = "Stop";
                 start = true;
@@ -216,36 +216,13 @@ namespace AcroDD_Cart
 
             }
         }
-        double dt2 = 0;
-        System.Diagnostics.Stopwatch sw2 = new System.Diagnostics.Stopwatch();
-        delegate void delegate1();
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            //ジョイパッドの描写
-            DrawJoypad();
-            //台車の描写
-            DrawCart(); 
-            textBox_wheelVoltL.Text = casterVelocity[0, 0].ToString("0.00");
-            textBox_steerVoltL.Text = casterVelocity[0, 1].ToString("0.00");
-            textBox_wheelVoltR.Text = casterVelocity[1, 0].ToString("0.00");
-            textBox_steerVoltR.Text = casterVelocity[1, 1].ToString("0.00");
-            textBox_steerAngleL.Text = steerAngleDeg[0].ToString("0.00");
-            textBox_steerAngleR.Text = steerAngleDeg[1].ToString("0.00");
-
-            cartAngleDeg = cartAngle * 180.0 / Math.PI;
-            cartAngularVelocityDeg = cartAngularVelocity * 180.0 / Math.PI;
-            textBox_angle.Text = cartAngleDeg.ToString("000.00");
-            textBox_angularVelo.Text = cartAngularVelocityDeg.ToString("000.00");
-
-            textBox_debug.Text = (casterVelocity[0, 1] - casterVelocity[1, 1]).ToString("0.00");
-
-        }
+        //double dt2 = 0;
+        //System.Diagnostics.Stopwatch sw2 = new System.Diagnostics.Stopwatch();
+        //delegate void delegate1();
         double dt = 0;
         System.Diagnostics.Stopwatch sw1 = new System.Diagnostics.Stopwatch();
-        private void OnElapsed_TimersTimer(object sender)
+        private void timer1_Tick(object sender, EventArgs e)
         {
-
             //DateTime now_time = DateTime.Now;
             //if (cnt == 0) { pre_time = DateTime.Now; }
 
@@ -305,7 +282,7 @@ namespace AcroDD_Cart
             CalcCasterVelocity(casterVelocity, casterOmega, steerAngle);
 
             //自己位置推定
-            CalcCartVelocity(cartVelocityRear,cartVelocityCenter,cartVelocityFront, out cartAngularVelocity, ref cartAngle, dt, casterVelocity);
+            CalcCartVelocity(cartVelocityRear, cartVelocityCenter, cartVelocityFront, out cartAngularVelocity, ref cartAngle, dt, casterVelocity);
             CalcCartPosition(cartPositionRear, cartPositionCenter, cartPositionFront, dt, cartVelocityRear, cartVelocityCenter, cartVelocityFront, cartAngle);
 
             //台車目標速度決定
@@ -352,14 +329,39 @@ namespace AcroDD_Cart
             }
             CalcIdealPosition(IdealCartPosition, ref IdealCartAngle, targetCartVelocity, targetCartAngularVelocity, dt);
 
-           
+
             CreateLogFile();
             WriteLogData();
-            Invoke(new delegate1(PlotGraph));
+            //Invoke(new delegate1(PlotGraph));
+            PlotGraph();
 
 
             //pre_time = now_time;
             cnt++;
+            //ジョイパッドの描写
+            DrawJoypad();
+            //台車の描写
+            DrawCart(); 
+            textBox_wheelVoltL.Text = casterVelocity[0, 0].ToString("0.00");
+            textBox_steerVoltL.Text = casterVelocity[0, 1].ToString("0.00");
+            textBox_wheelVoltR.Text = casterVelocity[1, 0].ToString("0.00");
+            textBox_steerVoltR.Text = casterVelocity[1, 1].ToString("0.00");
+            textBox_steerAngleL.Text = steerAngleDeg[0].ToString("0.00");
+            textBox_steerAngleR.Text = steerAngleDeg[1].ToString("0.00");
+
+            cartAngleDeg = cartAngle * 180.0 / Math.PI;
+            cartAngularVelocityDeg = cartAngularVelocity * 180.0 / Math.PI;
+            textBox_angle.Text = cartAngleDeg.ToString("000.00");
+            textBox_angularVelo.Text = cartAngularVelocityDeg.ToString("000.00");
+
+            textBox_debug.Text = (casterVelocity[0, 1] - casterVelocity[1, 1]).ToString("0.00");
+
+        }
+
+        private void OnElapsed_TimersTimer(object sender)
+        {
+
+            
 
         }
         public double GetPIDValue(double target, double control, double dt)

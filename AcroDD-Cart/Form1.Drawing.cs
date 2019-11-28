@@ -34,7 +34,7 @@ namespace AcroDD_Cart
             float padX = 0f;
             if (joyErr == JoyPad.JOYERR.NOERROR)
             {
-                pad.GetPosEx(Constants.padIndex);
+                pad.GetPosEx(Constants.PadIndex);
                 padY = -((float)pad.JoyInfoEx.dwXpos - 32767f) / 32768f;
                 padX = -((float)pad.JoyInfoEx.dwYpos - 32767f) / 32768f;
             }
@@ -218,8 +218,8 @@ namespace AcroDD_Cart
                 DrawCaster(casterPosition[i], angleDraw, casterWidth, casterRadius, casterOffset, g);
                 veloVec1[i].X = casterPosition[i].X + (casterOffset) * (float)Math.Cos(angleDraw);
                 veloVec1[i].Y = casterPosition[i].Y + (casterOffset) * (float)Math.Sin(angleDraw);
-                veloVec2[i].X = veloVec1[i].X - (int)(30 * casterOmega[i, 0]) * (float)Math.Cos(angleDraw);
-                veloVec2[i].Y = veloVec1[i].Y - (int)(30 * casterOmega[i, 0]) * (float)Math.Sin(angleDraw);
+                veloVec2[i].X = veloVec1[i].X - (int)(Constants.WheelRadius * casterOmega[i, 0]) * (float)Math.Cos(angleDraw);
+                veloVec2[i].Y = veloVec1[i].Y - (int)(Constants.WheelRadius * casterOmega[i, 0]) * (float)Math.Sin(angleDraw);
                 g.DrawLine(penVelo, veloVec1[i], veloVec2[i]);
                 casterVeloVec1[i].X = casterPosition[i].X;
                 casterVeloVec1[i].Y = casterPosition[i].Y;

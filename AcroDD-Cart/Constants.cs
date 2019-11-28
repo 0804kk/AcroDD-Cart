@@ -21,7 +21,7 @@ namespace AcroDD_Cart
         public const short BrakePortNo = 0;
         public const short ClutchPortNo = 2;
 
-        public const uint padIndex = 0;
+        public const uint PadIndex = 0;
         //-----------------------------
         // Mechanical Constants
         //-----------------------------

@@ -103,6 +103,9 @@ namespace AcroDD_Cart
                 voltageCharts[2].Series["Target"].Points.AddXY(time, targetCartAngularVelocity);
                 voltageCharts[2].Series["Now"].Points.AddXY(time, cartAngularVelocity);
 
+                voltageCharts[3].Series["Target"].Points.AddXY(time, cartAngularVelocity);
+                voltageCharts[3].Series["Now"].Points.AddXY(time, cartAngularVelocityByResitrantCondition2);
+
                 chart1.Series["Target"].Points.AddXY(time, targetPosition[2]);
                 chart1.Series["Now"].Points.AddXY(time, cartAngle);
 
@@ -114,7 +117,7 @@ namespace AcroDD_Cart
 
                 chart_dt.Series["Delta Time"].Points.AddXY(time, dt);
             }
-            if (cnt % 2 == 0)
+            if (cnt % 1 == 0)
             {
                 for (int i = 0; i < 2; i++)
                 {
@@ -172,6 +175,13 @@ namespace AcroDD_Cart
                 chart_dt.ChartAreas[0].AxisX.Minimum = timeAxisStartPoint;
             }
 
+            if (chart_position.Series[0].Points.Count >= 700)
+            {
+                chart_position.Series[0].Points.RemoveAt(0);
+                chart_position.Series[1].Points.RemoveAt(0);
+                //chart_position.Series[0].Points.Clear();
+            }
+
         }
         private void Button_reset_Click(object sender, EventArgs e)
         {
@@ -184,7 +194,7 @@ namespace AcroDD_Cart
             chart_position.Series[0].Points.Clear();
             chart_position.Series[1].Points.Clear();
 
-            chart_dt.Series[0].Points.Clear();
+            //chart_dt.Series[0].Points.Clear();
         }
     }
 }
