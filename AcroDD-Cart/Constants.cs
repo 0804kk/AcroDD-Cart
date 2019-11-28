@@ -50,6 +50,6 @@ namespace AcroDD_Cart
 
         public static readonly double[] EncoderRpspsLimit = { 120.0, 1000 };
 
-        public const int ControllInterval = 50;
+        public const int ControllInterval = 40;
     }
 }
