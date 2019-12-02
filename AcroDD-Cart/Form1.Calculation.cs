@@ -76,29 +76,23 @@ namespace AcroDD_Cart
                 }
             }
         }
-        private void CalcCartAngularVelocityByResitrantCondition(out double angularVelo, double[,] omega, double[] steerAngle)
-        {
-            var a = (omega[left, steer] * Math.Cos(steerAngle[left]) - omega[right, steer] * Math.Cos(steerAngle[right])) * Constants.CasterOffset;
-            var b = (omega[left, wheel] * Math.Sin(steerAngle[left]) - omega[right, wheel] * Math.Sin(steerAngle[right])) * Constants.WheelRadius;
-            var c = (Math.Cos(steerAngle[right]) - Math.Cos(steerAngle[left])) * Constants.CasterOffset;
-            angularVelo = (a + b) / c;
-        }
-        private void CalcCartAngularVelocityByResitrantCondition_part2(out double angularVelo, double[,] omega, double[] steerAngle)
+
+        private void CalcCartAngularVelocity(out double angularVelo, double[,] omega, double[] steerAngle)
         {
             var a = (omega[left, steer] * Math.Sin(steerAngle[left]) - omega[right, steer] * Math.Sin(steerAngle[right])) * Constants.CasterOffset;
             var b = (omega[left, wheel] * Math.Cos(steerAngle[left]) - omega[right, wheel] * Math.Cos(steerAngle[right])) * Constants.WheelRadius;
             var c = (Math.Sin(steerAngle[right]) - Math.Sin(steerAngle[left])) * Constants.CasterOffset + Constants.Wc;
             angularVelo = (a - b) / c;
         }
-        private void CalcCasterVelocity(double[,] velo, double[,] omega, double[] steerAngle)//文法上仕方なくLR両方計算　ジャグ配列使えばいける?
+        private void CalcCasterVelocity(double[,] velo, double[,] omega, double[] steerAngle, double angularVelo)//文法上仕方なくLR両方計算　ジャグ配列使えばいける?
         {
             for (int LorR = 0; LorR < 2; LorR++)//left:0 or right:1
             {
                 //補正あり
                 velo[LorR, wheel] = omega[LorR, wheel] * Constants.WheelRadius * Math.Cos(steerAngle[LorR])
-                                  - (omega[LorR, steer] + cartAngularVelocity) * Constants.CasterOffset * Math.Sin(steerAngle[LorR]); //車輪前方向移動速度[mm/s]
+                                  - (omega[LorR, steer] + angularVelo) * Constants.CasterOffset * Math.Sin(steerAngle[LorR]); //車輪前方向移動速度[mm/s]
                 velo[LorR, steer] = omega[LorR, wheel] * Constants.WheelRadius * Math.Sin(steerAngle[LorR])
-                                  + (omega[LorR, steer] + cartAngularVelocity) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
+                                  + (omega[LorR, steer] + angularVelo) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
 
                 //補正なし
                 //velo[LorR, wheel] = omega[LorR, wheel] * Constants.WheelRadius * Math.Cos(steerAngle[LorR])
@@ -107,8 +101,36 @@ namespace AcroDD_Cart
                 //                  + (omega[LorR, steer]) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
             }
         }
-        private void CalcCartVelocity(double[] cartVeloRear, double[] cartVeloCenter, double[] cartVeloFront, out double angularVelo, ref double angle, double dt, double[,] casterVelo)//逆運動学
+        private void CalcCartAngle(ref double angle, double angularVelo, double dt, double[,] casterVelo)//逆運動学
         {
+            //var angularVelo = (casterVelo[right, wheel] - casterVelo[left, wheel]) / Constants.Wc;
+
+            if (dt > 0.0010)
+            {
+                cartAngularVelocityTan = Math.Atan(angularVelo * dt) / dt;
+                cartAngularVelocitySin = Math.Asin(angularVelo * dt) / dt;
+            }
+            else
+            {
+                cartAngularVelocityTan = 0.0;
+                cartAngularVelocitySin = 0.0;
+            }
+
+            angle += angularVelo * dt;
+            if (angle > Math.PI) angle -= 2 * Math.PI;
+            else if (angle <= -Math.PI) angle += 2 * Math.PI;
+
+            cartAngleTan += cartAngularVelocityTan * dt;
+            if (cartAngleTan > Math.PI) cartAngleTan -= 2 * Math.PI;
+            else if (cartAngleTan <= -Math.PI) cartAngleTan += 2 * Math.PI;
+
+            cartAngleSin += cartAngularVelocitySin * dt;
+            if (cartAngleSin > Math.PI) cartAngleSin -= 2 * Math.PI;
+            else if (cartAngleSin <= -Math.PI) cartAngleSin += 2 * Math.PI;
+        }
+        private void CalcCartVelocity(double[] cartVeloRear, double[] cartVeloCenter, double[] cartVeloFront, double angle, double dt, double[,] casterVelo)//逆運動学
+        {
+
             double[] cartVeloMachineRear = new double[2];//台車座標系
             double[] cartVeloMachineCenter = new double[2];//台車座標系
             double[] cartVeloMachineFront = new double[2];//台車座標系
@@ -122,25 +144,26 @@ namespace AcroDD_Cart
             cartVeloMachineFront[0] = (casterVelo[left, wheel] + casterVelo[right, wheel]) / 2.0;
             cartVeloMachineFront[1] = (casterVelo[right, wheel] - casterVelo[left, wheel]) * Constants.Lc * 2.0 / Constants.Wc
                                + (casterVelo[right, steer] + casterVelo[left, steer]) / 2.0;
-            angularVelo = (casterVelo[right, wheel] - casterVelo[left, wheel]) / Constants.Wc;
-            cartAngularVelocityTan = Math.Atan(angularVelo);
 
-            angle += angularVelo * dt;
-            if (angle > Math.PI) angle -= 2 * Math.PI;
-            else if (angle <= -Math.PI) angle += 2 * Math.PI;
-
-            cartAngleTan += cartAngularVelocityTan * dt;
-            if (cartAngleTan > Math.PI) cartAngleTan -= 2 * Math.PI;
-            else if (cartAngleTan <= -Math.PI) cartAngleTan += 2 * Math.PI;
 
             //System.Console.WriteLine("{0} {1}", angularVelo, angle);
 
-            cartVeloRear[0] = cartVeloMachineRear[0] * Math.Cos(angle) - cartVeloMachineRear[1] * Math.Sin(angle);//車輪中点X方向移動距離(床座標系)
-            cartVeloRear[1] = cartVeloMachineRear[0] * Math.Sin(angle) + cartVeloMachineRear[1] * Math.Cos(angle);//車輪中点Y方向移動距離(床座標系)
-            cartVeloCenter[0] = cartVeloMachineCenter[0] * Math.Cos(angle) - cartVeloMachineCenter[1] * Math.Sin(angle);//車輪中点X方向移動距離(床座標系)
-            cartVeloCenter[1] = cartVeloMachineCenter[0] * Math.Sin(angle) + cartVeloMachineCenter[1] * Math.Cos(angle);//車輪中点Y方向移動距離(床座標系)
-            cartVeloFront[0] = cartVeloMachineFront[0] * Math.Cos(angle) - cartVeloMachineFront[1] * Math.Sin(angle);//車輪中点X方向移動距離(床座標系)
-            cartVeloFront[1] = cartVeloMachineFront[0] * Math.Sin(angle) + cartVeloMachineFront[1] * Math.Cos(angle);//車輪中点Y方向移動距離(床座標系)   
+            multiplyRotationMatrix(cartVeloRear, cartVeloMachineRear, angle);
+            multiplyRotationMatrix(cartVeloCenter, cartVeloMachineCenter, angle);
+            multiplyRotationMatrix(cartVeloFront, cartVeloMachineFront, angle);
+
+            multiplyRotationMatrix(cartVelocityRearTan, cartVeloMachineRear, cartAngleTan);
+            multiplyRotationMatrix(cartVelocityCenterTan, cartVeloMachineCenter, cartAngleTan);
+            multiplyRotationMatrix(cartVelocityFrontTan, cartVeloMachineFront, cartAngleTan);
+
+            multiplyRotationMatrix(cartVelocityRearSin, cartVeloMachineRear, cartAngleSin);
+            multiplyRotationMatrix(cartVelocityCenterSin, cartVeloMachineCenter, cartAngleSin);
+            multiplyRotationMatrix(cartVelocityFrontSin, cartVeloMachineFront, cartAngleSin);
+        }
+        private void multiplyRotationMatrix(double[] result, double[] vector, double angle)
+        {
+            result[0] = vector[0] * Math.Cos(angle) - vector[1] * Math.Sin(angle);
+            result[1] = vector[0] * Math.Sin(angle) + vector[1] * Math.Cos(angle);
         }
         private void CalcCartPosition(double[] cartPosRear, double[] cartPosCenter, double[] cartPosFront, double dt,
             double[] cartVeloRear, double[] cartVeloCenter, double[] cartVeloFront, double angle)
@@ -150,6 +173,12 @@ namespace AcroDD_Cart
                 cartPosRear[i] += cartVeloRear[i] * dt;
                 cartPosCenter[i] += cartVeloCenter[i] * dt;
                 cartPosFront[i] += cartVeloFront[i] * dt;
+                cartPositionRearTan[i] += cartVelocityRearTan[i] * dt;
+                cartPositionCenterTan[i] += cartVelocityCenterTan[i] * dt;
+                cartPositionFrontTan[i] += cartVelocityFrontTan[i] * dt;
+                cartPositionRearSin[i] += cartVelocityRearSin[i] * dt;
+                cartPositionCenterSin[i] += cartVelocityCenterSin[i] * dt;
+                cartPositionFrontSin[i] += cartVelocityFrontSin[i] * dt;
             }
 
             //cartPosCenter[0] = cartPosRear[0] + Constants.Lc * Math.Cos(angle) - Constants.Lc;
@@ -157,28 +186,7 @@ namespace AcroDD_Cart
 
             //cartPosFront[0] = cartPosRear[0] + 2.0 * Constants.Lc * Math.Cos(angle) - 2.0 * Constants.Lc;
             //cartPosFront[1] = cartPosRear[1] + 2.0 * Constants.Lc * Math.Sin(angle);
-
-
-            for (int i = 0; i < 2; i++)
-            {
-                switch (origin)
-                {
-                    case OriginEnum.Front:
-                        cartPosition[i] = cartPositionFront[i];
-                        break;
-                    case OriginEnum.Center:
-                        cartPosition[i] = cartPositionCenter[i];
-                        break;
-                    case OriginEnum.Rear:
-                        cartPosition[i] = cartPositionRear[i];
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
-
-
         private void GetTargetCartVelocityByJoypad()
         {
             targetCartVelocity[0] = joyValueFilter.X * Constants.MaxVelocity;

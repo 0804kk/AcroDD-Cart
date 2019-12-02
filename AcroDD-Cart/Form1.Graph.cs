@@ -104,7 +104,7 @@ namespace AcroDD_Cart
                 voltageCharts[2].Series["Now"].Points.AddXY(time, cartAngularVelocity);
 
                 voltageCharts[3].Series["Target"].Points.AddXY(time, cartAngularVelocity);
-                voltageCharts[3].Series["Now"].Points.AddXY(time, cartAngularVelocityByResitrantCondition2);
+                voltageCharts[3].Series["Now"].Points.AddXY(time, cartAngularVelocitySin);
 
                 chart1.Series["Target"].Points.AddXY(time, targetPosition[2]);
                 chart1.Series["Now"].Points.AddXY(time, cartAngle);
