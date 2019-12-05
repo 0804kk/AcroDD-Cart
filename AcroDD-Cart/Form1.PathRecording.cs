@@ -390,14 +390,16 @@ namespace AcroDD_Cart
                 recodeNum++;
             }
         }
-        int selectedPathIndex = 0;
+        List<double[]> selectedPathData = new List<double[]>();
+
         private void listBox_path_SelectedIndexChanged(object sender, EventArgs e)
         {
-            selectedPathIndex = listBox_path.SelectedIndex;
-            chart_position.Series[1].Points.Clear();
-            foreach (var item in pathDataList[selectedPathIndex])
+            selectedPathData = pathDataList[listBox_path.SelectedIndex];
+            textBox_selectedPath.Text = listBox_path.SelectedItem.ToString();
+            chart_position.Series["Target"].Points.Clear();
+            foreach (var item in selectedPathData)
             {
-                chart_position.Series[1].Points.AddXY(item[1], item[0]);
+                chart_position.Series["Target"].Points.AddXY(item[1], item[0]);
 
             }
 

@@ -57,8 +57,8 @@ namespace AcroDD_Cart
             chart.Titles.Add(new Title("Position"));
             chart.Legends.Clear();
             chart.Series.Clear();
-            chart.Series.Add("Estimated");
             chart.Series.Add("Target");
+            chart.Series.Add("Estimated");
             chart.ChartAreas[0].AxisX.IsReversed = true;
             chart.ChartAreas[0].AxisX.Title = "Y [mm]";
             chart.ChartAreas[0].AxisY.Title = "X [mm]";
@@ -74,8 +74,8 @@ namespace AcroDD_Cart
                 chart.Series[i].ChartType = SeriesChartType.Point;
                 chart.Series[i].MarkerSize = 4;
             }
-            chart.Series[0].Color = Color.DodgerBlue;
-            chart.Series[1].Color = Color.IndianRed;
+            chart.Series[0].Color = Color.IndianRed;
+            chart.Series[1].Color = Color.DodgerBlue;
         }
 
 
@@ -125,9 +125,9 @@ namespace AcroDD_Cart
                     if (max[i] < cartPosition[i]) max[i] = cartPosition[i];
                 }
                 //System.Console.WriteLine("{0} {1} {2} ", max[0], min[0], cartPosition[0]);
-                chart_position.Series[0].Points.AddXY(cartPosition[1], cartPosition[0]);
+                chart_position.Series["Estimated"].Points.AddXY(cartPosition[1], cartPosition[0]);
                 //chart_position.Series[0].Points.AddXY(IdealCartPosition[1], IdealCartPosition[0]);
-                chart_position.Series[1].Points.AddXY(targetPosition[1], targetPosition[0]);
+                //chart_position.Series["Target"].Points.AddXY(targetPosition[1], targetPosition[0]);
                 //if (cnt > 5)
                 {
                     chart_position.ChartAreas[0].AxisX.Maximum = Math.Floor(max[1]);
@@ -178,7 +178,7 @@ namespace AcroDD_Cart
             if (chart_position.Series[0].Points.Count >= 350)
             {
                 chart_position.Series[0].Points.RemoveAt(0);
-                chart_position.Series[1].Points.RemoveAt(0);
+                //chart_position.Series[1].Points.RemoveAt(0);
                 //chart_position.Series[0].Points.Clear();
                 //chart_position.Series[1].Points.Clear();
             }
