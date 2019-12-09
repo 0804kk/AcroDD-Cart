@@ -465,41 +465,6 @@ namespace AcroDD_Cart
                 axisCenterFromRear = 0.0;
             }
         }
-        private void checkBox_reverse_CheckedChanged(object sender, EventArgs e)
-        {
-            selectedPathData.Reverse();
-            chart_position.Series["Target"].Points.Clear();
-            foreach (var item in selectedPathData)
-            {
-                chart_position.Series["Target"].Points.AddXY(item[1], item[0]);
-            }
-        }
-        bool auto_driving_start = false;
 
-        private void updateButtonStatus_startDriving()
-        {
-            if (auto_driving_start)
-            {
-                button_startDriving.Text = "Stop Driving";
-            }
-            else
-            {
-                button_startDriving.Text = "Start Driving";
-            }
-        }
-        private void button_startDriving_Click(object sender, EventArgs e)
-        {
-            if (auto_driving_start)
-            {
-                auto_driving_start = false;
-            }
-            else
-            {
-                auto_driving_start = true;
-
-            }
-            updateButtonStatus_startDriving();
-
-        }
     }
 }
