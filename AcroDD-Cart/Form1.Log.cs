@@ -45,19 +45,19 @@ namespace AcroDD_Cart
             headerList.Add(nameof(dt));
 
             headerList.AddRange(GetArrayNameToList(nameof(cartPositionCenter), 2));
-            headerList.AddRange(GetArrayNameToList(nameof(cartPositionCenterTan), 2));
-            headerList.AddRange(GetArrayNameToList(nameof(cartPositionCenterSin), 2));
+            //headerList.AddRange(GetArrayNameToList(nameof(cartPositionCenterTan), 2));
+            //headerList.AddRange(GetArrayNameToList(nameof(cartPositionCenterSin), 2));
             //headerList.AddRange(GetArrayNameToList(nameof(IdealCartPosition), 2));
             //headerList.Add(nameof(IdealCartAngle));
             headerList.AddRange(GetArrayNameToList(nameof(targetPosition), 3));
 
             headerList.AddRange(GetArrayNameToList(nameof(cartVelocityCenter), 2));
-            headerList.AddRange(GetArrayNameToList(nameof(cartVelocityCenterTan), 2));
-            headerList.AddRange(GetArrayNameToList(nameof(cartVelocityCenterSin), 2));
+            //headerList.AddRange(GetArrayNameToList(nameof(cartVelocityCenterTan), 2));
+            //headerList.AddRange(GetArrayNameToList(nameof(cartVelocityCenterSin), 2));
 
             headerList.Add(nameof(cartAngularVelocity));
-            headerList.Add(nameof(cartAngularVelocityTan));
-            headerList.Add(nameof(cartAngularVelocitySin));
+            //headerList.Add(nameof(cartAngularVelocityTan));
+            //headerList.Add(nameof(cartAngularVelocitySin));
             headerList.Add(nameof(cartAngle));
             headerList.Add(nameof(cartAngleTan));
             headerList.Add(nameof(cartAngleSin));
@@ -92,19 +92,19 @@ namespace AcroDD_Cart
             logList.Add(dt);
 
             logList.AddRange(GetValueToList(cartPositionCenter, 2));
-            logList.AddRange(GetValueToList(cartPositionCenterTan, 2));
-            logList.AddRange(GetValueToList(cartPositionCenterSin, 2));
+            //logList.AddRange(GetValueToList(cartPositionCenterTan, 2));
+            //logList.AddRange(GetValueToList(cartPositionCenterSin, 2));
             //logList.AddRange(GetValueToList(IdealCartPosition, 2));
             //logList.Add(IdealCartAngle);
             logList.AddRange(GetValueToList(targetPosition, 3));
 
             logList.AddRange(GetValueToList(cartVelocityCenter, 2));
-            logList.AddRange(GetValueToList(cartVelocityCenterTan, 2));
-            logList.AddRange(GetValueToList(cartVelocityCenterSin, 2));
+            //logList.AddRange(GetValueToList(cartVelocityCenterTan, 2));
+            //logList.AddRange(GetValueToList(cartVelocityCenterSin, 2));
 
             logList.Add(cartAngularVelocity);
-            logList.Add(cartAngularVelocityTan);
-            logList.Add(cartAngularVelocitySin);
+            //logList.Add(cartAngularVelocityTan);
+            //logList.Add(cartAngularVelocitySin);
             logList.Add(cartAngle);
             logList.Add(cartAngleTan);
             logList.Add(cartAngleSin);

@@ -77,12 +77,20 @@ namespace AcroDD_Cart
             }
         }
 
-        private void CalcCartAngularVelocity(out double angularVelo, double[,] omega, double[] steerAngle)
+        private void CalcCartAngularVelocity(out double angularVelo, double[,] omega, double[] steerAngle,double dt)
         {
             var a = (omega[left, steer] * Math.Sin(steerAngle[left]) - omega[right, steer] * Math.Sin(steerAngle[right])) * Constants.CasterOffset;
             var b = (omega[left, wheel] * Math.Cos(steerAngle[left]) - omega[right, wheel] * Math.Cos(steerAngle[right])) * Constants.WheelRadius;
             var c = (Math.Sin(steerAngle[right]) - Math.Sin(steerAngle[left])) * Constants.CasterOffset + Constants.Wc;
-            angularVelo = (a - b) / c;
+            var e = (a - b) / c;
+            if (dt > 0.0010)
+            {
+                angularVelo = Math.Asin(e * dt) / dt;
+            }
+            else
+            {
+                angularVelo = 0.0;
+            }
         }
         private void CalcCasterVelocity(double[,] velo, double[,] omega, double[] steerAngle, double angularVelo)//文法上仕方なくLR両方計算　ジャグ配列使えばいける?
         {
@@ -101,32 +109,32 @@ namespace AcroDD_Cart
                 //                  + (omega[LorR, steer]) * Constants.CasterOffset * Math.Cos(steerAngle[LorR]); //車輪横方向移動速度[mm/s]
             }
         }
-        private void CalcCartAngle(ref double angle, double angularVelo, double dt, double[,] casterVelo)//逆運動学
+        private void CalcCartAngle(ref double angle, double angularVelo, double[,] casterVelo)//逆運動学
         {
             //var angularVelo = (casterVelo[right, wheel] - casterVelo[left, wheel]) / Constants.Wc;
 
-            if (dt > 0.0010)
-            {
-                cartAngularVelocityTan = Math.Atan(angularVelo * dt) / dt;
-                cartAngularVelocitySin = Math.Asin(angularVelo * dt) / dt;
-            }
-            else
-            {
-                cartAngularVelocityTan = 0.0;
-                cartAngularVelocitySin = 0.0;
-            }
+            //if (dt > 0.0010)
+            //{
+            //    cartAngularVelocityTan = Math.Atan(angularVelo * dt) / dt;
+            //    cartAngularVelocitySin = Math.Asin(angularVelo * dt) / dt;
+            //}
+            //else
+            //{
+            //    cartAngularVelocityTan = 0.0;
+            //    cartAngularVelocitySin = 0.0;
+            //}
 
             angle += angularVelo * dt;
             if (angle > Math.PI) angle -= 2 * Math.PI;
             else if (angle <= -Math.PI) angle += 2 * Math.PI;
 
-            cartAngleTan += cartAngularVelocityTan * dt;
-            if (cartAngleTan > Math.PI) cartAngleTan -= 2 * Math.PI;
-            else if (cartAngleTan <= -Math.PI) cartAngleTan += 2 * Math.PI;
+            //cartAngleTan += cartAngularVelocityTan * dt;
+            //if (cartAngleTan > Math.PI) cartAngleTan -= 2 * Math.PI;
+            //else if (cartAngleTan <= -Math.PI) cartAngleTan += 2 * Math.PI;
 
-            cartAngleSin += cartAngularVelocitySin * dt;
-            if (cartAngleSin > Math.PI) cartAngleSin -= 2 * Math.PI;
-            else if (cartAngleSin <= -Math.PI) cartAngleSin += 2 * Math.PI;
+            //cartAngleSin += cartAngularVelocitySin * dt;
+            //if (cartAngleSin > Math.PI) cartAngleSin -= 2 * Math.PI;
+            //else if (cartAngleSin <= -Math.PI) cartAngleSin += 2 * Math.PI;
         }
         private void CalcCartVelocity(double[] cartVeloRear, double[] cartVeloCenter, double[] cartVeloFront, double angle, double dt, double[,] casterVelo)//逆運動学
         {
@@ -152,13 +160,13 @@ namespace AcroDD_Cart
             multiplyRotationMatrix(cartVeloCenter, cartVeloMachineCenter, angle);
             multiplyRotationMatrix(cartVeloFront, cartVeloMachineFront, angle);
 
-            multiplyRotationMatrix(cartVelocityRearTan, cartVeloMachineRear, cartAngleTan);
-            multiplyRotationMatrix(cartVelocityCenterTan, cartVeloMachineCenter, cartAngleTan);
-            multiplyRotationMatrix(cartVelocityFrontTan, cartVeloMachineFront, cartAngleTan);
+            //multiplyRotationMatrix(cartVelocityRearTan, cartVeloMachineRear, cartAngleTan);
+            //multiplyRotationMatrix(cartVelocityCenterTan, cartVeloMachineCenter, cartAngleTan);
+            //multiplyRotationMatrix(cartVelocityFrontTan, cartVeloMachineFront, cartAngleTan);
 
-            multiplyRotationMatrix(cartVelocityRearSin, cartVeloMachineRear, cartAngleSin);
-            multiplyRotationMatrix(cartVelocityCenterSin, cartVeloMachineCenter, cartAngleSin);
-            multiplyRotationMatrix(cartVelocityFrontSin, cartVeloMachineFront, cartAngleSin);
+            //multiplyRotationMatrix(cartVelocityRearSin, cartVeloMachineRear, cartAngleSin);
+            //multiplyRotationMatrix(cartVelocityCenterSin, cartVeloMachineCenter, cartAngleSin);
+            //multiplyRotationMatrix(cartVelocityFrontSin, cartVeloMachineFront, cartAngleSin);
         }
         private void multiplyRotationMatrix(double[] result, double[] vector, double angle)
         {
@@ -173,12 +181,12 @@ namespace AcroDD_Cart
                 cartPosRear[i] += cartVeloRear[i] * dt;
                 cartPosCenter[i] += cartVeloCenter[i] * dt;
                 cartPosFront[i] += cartVeloFront[i] * dt;
-                cartPositionRearTan[i] += cartVelocityRearTan[i] * dt;
-                cartPositionCenterTan[i] += cartVelocityCenterTan[i] * dt;
-                cartPositionFrontTan[i] += cartVelocityFrontTan[i] * dt;
-                cartPositionRearSin[i] += cartVelocityRearSin[i] * dt;
-                cartPositionCenterSin[i] += cartVelocityCenterSin[i] * dt;
-                cartPositionFrontSin[i] += cartVelocityFrontSin[i] * dt;
+                //cartPositionRearTan[i] += cartVelocityRearTan[i] * dt;
+                //cartPositionCenterTan[i] += cartVelocityCenterTan[i] * dt;
+                //cartPositionFrontTan[i] += cartVelocityFrontTan[i] * dt;
+                //cartPositionRearSin[i] += cartVelocityRearSin[i] * dt;
+                //cartPositionCenterSin[i] += cartVelocityCenterSin[i] * dt;
+                //cartPositionFrontSin[i] += cartVelocityFrontSin[i] * dt;
             }
 
             //cartPosCenter[0] = cartPosRear[0] + Constants.Lc * Math.Cos(angle) - Constants.Lc;

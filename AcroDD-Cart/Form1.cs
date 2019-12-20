@@ -68,16 +68,16 @@ namespace AcroDD_Cart
         double[] cartVelocityRear = new double[2];//[mm/s, mm/s]
         double[] cartVelocityCenter = new double[2];//[mm/s, mm/s]
         double[] cartVelocityFront = new double[2];//[mm/s, mm/s]
-        double[] cartVelocityRearTan = new double[2];//[mm/s, mm/s]
-        double[] cartVelocityCenterTan = new double[2];//[mm/s, mm/s]
-        double[] cartVelocityFrontTan = new double[2];//[mm/s, mm/s]
-        double[] cartVelocityRearSin = new double[2];//[mm/s, mm/s]
-        double[] cartVelocityCenterSin = new double[2];//[mm/s, mm/s]
-        double[] cartVelocityFrontSin = new double[2];//[mm/s, mm/s]
+        //double[] cartVelocityRearTan = new double[2];//[mm/s, mm/s]
+        //double[] cartVelocityCenterTan = new double[2];//[mm/s, mm/s]
+        //double[] cartVelocityFrontTan = new double[2];//[mm/s, mm/s]
+        //double[] cartVelocityRearSin = new double[2];//[mm/s, mm/s]
+        //double[] cartVelocityCenterSin = new double[2];//[mm/s, mm/s]
+        //double[] cartVelocityFrontSin = new double[2];//[mm/s, mm/s]
 
         double cartAngularVelocity = 0.0;//[rad/s]一周期前のやつを使わない（近似使用）
-        double cartAngularVelocityTan = 0.0;//[rad/s]一周期前のやつを使わない（近似使用）（tan）
-        double cartAngularVelocitySin = 0.0;//[rad/s]一周期前のやつを使わない（近似使用）（sin）
+        //double cartAngularVelocityTan = 0.0;//[rad/s]一周期前のやつを使わない（近似使用）（tan）
+        //double cartAngularVelocitySin = 0.0;//[rad/s]一周期前のやつを使わない（近似使用）（sin）
 
         double cartAngularVelocityDeg = 0.0;//[deg/s]
 
@@ -89,12 +89,12 @@ namespace AcroDD_Cart
         double[] cartPositionRear = new double[2] { 0.0, 0.0};//台車後輪の座標[mm, mm, rad]
         double[] cartPositionCenter = new double[2];//台車中心の座標[mm, mm, rad]
         double[] cartPositionFront = new double[2];//台前後輪の座標[mm, mm, rad]
-        double[] cartPositionRearTan = new double[2] { 0.0, 0.0 };//台車後輪の座標[mm, mm, rad]
-        double[] cartPositionCenterTan = new double[2];//台車中心の座標[mm, mm, rad]
-        double[] cartPositionFrontTan = new double[2];//台前後輪の座標[mm, mm, rad]
-        double[] cartPositionRearSin = new double[2] { 0.0, 0.0 };//台車後輪の座標[mm, mm, rad]
-        double[] cartPositionCenterSin = new double[2];//台車中心の座標[mm, mm, rad]
-        double[] cartPositionFrontSin = new double[2];//台前後輪の座標[mm, mm, rad]
+        //double[] cartPositionRearTan = new double[2] { 0.0, 0.0 };//台車後輪の座標[mm, mm, rad]
+        //double[] cartPositionCenterTan = new double[2];//台車中心の座標[mm, mm, rad]
+        //double[] cartPositionFrontTan = new double[2];//台前後輪の座標[mm, mm, rad]
+        //double[] cartPositionRearSin = new double[2] { 0.0, 0.0 };//台車後輪の座標[mm, mm, rad]
+        //double[] cartPositionCenterSin = new double[2];//台車中心の座標[mm, mm, rad]
+        //double[] cartPositionFrontSin = new double[2];//台前後輪の座標[mm, mm, rad]
 
         double[] IdealCartPosition = new double[2];//目標速度から計算した台車の座標[mm, mm, rad]
         double IdealCartAngle = 0;
@@ -290,11 +290,11 @@ namespace AcroDD_Cart
                 }
             }
             CalcCasterOmegaFromEncoderRps(casterOmega, encoderRps);
-            CalcCartAngularVelocity(out cartAngularVelocity, casterOmega, steerAngle);
+            CalcCartAngularVelocity(out cartAngularVelocity, casterOmega, steerAngle, dt);
             CalcCasterVelocity(casterVelocity, casterOmega, steerAngle, cartAngularVelocity);
 
             //自己位置推定
-            CalcCartAngle(ref cartAngle, cartAngularVelocity, dt, casterVelocity);
+            CalcCartAngle(ref cartAngle, cartAngularVelocity, casterVelocity);
             CalcCartVelocity(cartVelocityRear, cartVelocityCenter, cartVelocityFront, cartAngle, dt, casterVelocity);
             CalcCartPosition(cartPositionRear, cartPositionCenter, cartPositionFront, dt, cartVelocityRear, cartVelocityCenter, cartVelocityFront, cartAngle);
 
@@ -383,6 +383,8 @@ namespace AcroDD_Cart
             cartAngularVelocityDeg = cartAngularVelocity * 180.0 / Math.PI;
             textBox_angle.Text = cartAngleDeg.ToString("000.00");
             textBox_angularVelo.Text = cartAngularVelocityDeg.ToString("000.00");
+            textBox_x.Text = cartPosition[0].ToString("000.00");
+            textBox_y.Text = cartPosition[1].ToString("000.00");
 
             textBox_debug.Text = (casterVelocity[0, 1] - casterVelocity[1, 1]).ToString("0.00");
             updateButtonStatus_startDriving();
