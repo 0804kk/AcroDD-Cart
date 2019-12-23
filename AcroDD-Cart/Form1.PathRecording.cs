@@ -70,8 +70,8 @@ namespace AcroDD_Cart
                 {
                     x = radius - radius * Math.Cos((double)i / max * 2 * Math.PI);
                     y = -radius * Math.Sin((double)i / max * 2 * Math.PI);
-                    //theta = maxAngle * Math.Sin((double)i / max * 2 * Math.PI);
-                    theta = 0.0;
+                    theta = maxAngle * Math.Sin((double)i / max * 2 * Math.PI);
+                    //theta = 0.0;
 
                     double[] data = new double[3] { x, y, theta };
 

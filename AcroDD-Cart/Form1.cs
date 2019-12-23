@@ -198,7 +198,7 @@ namespace AcroDD_Cart
                 ApplyVoltageToMotor(targetMotorVoltage);//0を出力
 
                 switchBrake(false);
-                switchClutch(true);
+                switchClutch(false);
             }
         }
 

@@ -17,21 +17,52 @@ namespace AcroDD_Cart
 
         private void InitLog()
         {
-            DateTime now_time = DateTime.Now;
             defaultDirectoryPath = Application.StartupPath;
-            var path1 = defaultDirectoryPath.Substring(0, defaultDirectoryPath.LastIndexOf(@"\"));
-            var path2 = path1.Substring(0, path1.LastIndexOf(@"\"));
-            var path3 = path2.Substring(0, path2.LastIndexOf(@"\"));
-            var path4 = path3.Substring(0, path3.LastIndexOf(@"\"));
-            var path5 = path4.Substring(0, path4.LastIndexOf(@"\"));//5つ上の階層へ
-            logDirectoryPath = path5 + @"\Log\";
-            if (!System.IO.File.Exists(logDirectoryPath))
+            var logDirectoryPathFilePath = defaultDirectoryPath + @"\logDirectroyPath.txt";
+
+            if (System.IO.File.Exists(logDirectoryPathFilePath))
             {
-                Directory.CreateDirectory(logDirectoryPath);//ログ用フォルダが存在しなかったら作成
+                string readText = File.ReadAllText(logDirectoryPathFilePath);
+                Console.WriteLine(readText);
+                logDirectoryPath = readText;
+
             }
-            string folderName = logDirectoryPath + now_time.ToString("yyyyMMdd");
-            if (!System.IO.File.Exists(folderName))
+            else
             {
+                MessageBox.Show(logDirectoryPathFilePath + "が存在しません．");
+                //FolderBrowserDialogクラスのインスタンスを作成
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+                //上部に表示する説明テキストを指定する
+                fbd.Description = "Logフォルダを指定してください．";
+                //ルートフォルダを指定する
+                //デフォルトでDesktop
+                fbd.RootFolder = Environment.SpecialFolder.Desktop;
+                //最初に選択するフォルダを指定する
+                //RootFolder以下にあるフォルダである必要がある
+                fbd.SelectedPath = defaultDirectoryPath;
+                //ユーザーが新しいフォルダを作成できるようにする
+                //デフォルトでTrue
+                fbd.ShowNewFolderButton = true;
+
+                //ダイアログを表示する
+                if (fbd.ShowDialog(this) == DialogResult.OK)
+                {
+                    //選択されたフォルダを表示する
+                    Console.WriteLine(fbd.SelectedPath);
+                }
+                StreamWriter sw = File.CreateText(logDirectoryPathFilePath);
+                sw.Write(fbd.SelectedPath);
+                sw.Close();
+                logDirectoryPath = fbd.SelectedPath;
+            }
+
+            DateTime now_time = DateTime.Now;
+
+            string folderName = logDirectoryPath + @"\" + now_time.ToString("yyyyMMdd");
+            if (!System.IO.Directory.Exists(folderName))
+            {
+                Console.WriteLine(folderName);
                 Directory.CreateDirectory(folderName);//日付のフォルダが存在しなかったら作成
             }
             logFilePath = folderName + @"\" + now_time.ToString("yyyyMMdd#HHmmss#");
