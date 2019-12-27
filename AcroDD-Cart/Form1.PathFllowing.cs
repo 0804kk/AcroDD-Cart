@@ -11,6 +11,16 @@ namespace AcroDD_Cart
 
     public partial class Form1
     {
+
+        enum AutoRunModeEnum
+        {
+            Stop,
+            RunWayPoint,
+            RunEndPoint,
+        }
+        AutoRunModeEnum AutoRunMode = AutoRunModeEnum.Stop;
+
+
         Vector3 diffPosition_vec = new Vector3();
         Vector3 targetUnitVector_vec = new Vector3();
         Vector3 targetVelocity_vec = new Vector3();
@@ -21,6 +31,7 @@ namespace AcroDD_Cart
 
 
         double errorRadius = 10.0;//[mm]
+        double LastErrorRadius = 2.0;//[mm]
 
         int nowIndex = 0;
         double filterConst  = 0.5;
@@ -30,43 +41,51 @@ namespace AcroDD_Cart
         {
             float turningRadius = (float)Math.Sqrt(axisCenterFromRear * axisCenterFromRear + Constants.Wc * Constants.Wc);
 
-            if (!auto_driving_start)
+            if (AutoRunMode == AutoRunModeEnum.Stop)
             {
                 targetVelocity_vec = Vector3.Zero;
             }
             else
-            {            
-
+            {
                 targetPosition = selectedPathData[nowIndex];
                 diffPosition_vec.X = (float)(targetPosition[0] - nowPosition[0]);
                 diffPosition_vec.Y = (float)(targetPosition[1] - nowPosition[1]);
                 diffPosition_vec.Z = (float)(targetPosition[2] - nowAngle) * turningRadius;
-
-                if (diffPosition_vec.Length() <= errorRadius)
-                {
-                    if (nowIndex < selectedPathData.Count - 1)
-                        nowIndex++;
-                    else
-                        isEndPoint = true;
-
-
-                    System.Console.WriteLine(nowIndex + " "+ diffPosition_vec.Length());
-                    return;
-                }
-
+            
                 targetUnitVector_vec = Vector3.Normalize(diffPosition_vec);
+                
 
-                if (isEndPoint)
+                if (AutoRunMode == AutoRunModeEnum.RunWayPoint)
                 {
-                    auto_driving_start = false;
-                    isEndPoint = false;
-                    nowIndex = 0;
-                }
-                else
-                {
+                    if (diffPosition_vec.Length() <= errorRadius)
+                    {
+                        if (nowIndex < selectedPathData.Count - 2)
+                            nowIndex++;
+                        else
+                            AutoRunMode = AutoRunModeEnum.RunEndPoint;//目標が最後の点になったら
+
+                        System.Console.WriteLine(nowIndex + " " + diffPosition_vec.Length());
+                        return;
+                    }
+
                     targetVelocity_vec = Vector3.Multiply((float)Constants.MaxVelocity, targetUnitVector_vec);
+                    
+                }
+                else if (AutoRunMode == AutoRunModeEnum.RunEndPoint)
+                {
+                    targetVelocity_vec = Vector3.Multiply((float)Constants.MaxVelocity * (float)diffPosition_vec.Length() / (float)interval, targetUnitVector_vec);
+                    //targetVelocity_vec = Vector3.Multiply((float)Constants.MaxVelocity, targetUnitVector_vec);
+
+                    if (diffPosition_vec.Length() <= LastErrorRadius)
+                    {
+                        AutoRunMode = AutoRunModeEnum.Stop;
+                        isEndPoint = false;
+                        nowIndex = 0;
+                    }
+
                 }
             }
+
             targetVelocityFilter_vec = Vector3.Multiply((float)(1.0 - filterConst), targetVelocityFilter_vec)
                 + Vector3.Multiply((float)(filterConst), targetVelocity_vec);//ローパスフィルタ
 
@@ -83,11 +102,10 @@ namespace AcroDD_Cart
                 chart_position.Series["Target"].Points.AddXY(item[1], item[0]);
             }
         }
-        bool auto_driving_start = false;
 
         private void updateButtonStatus_startDriving()
         {
-            if (auto_driving_start)
+            if (AutoRunMode != AutoRunModeEnum.Stop)
             {
                 button_startDriving.Text = "Stop Driving";
             }
@@ -98,14 +116,13 @@ namespace AcroDD_Cart
         }
         private void button_startDriving_Click(object sender, EventArgs e)
         {
-            if (auto_driving_start)
+            if (AutoRunMode == AutoRunModeEnum.Stop)
             {
-                auto_driving_start = false;
+                AutoRunMode  = AutoRunModeEnum.RunWayPoint;
             }
             else
             {
-                auto_driving_start = true;
-
+                AutoRunMode  = AutoRunModeEnum.Stop;
             }
             updateButtonStatus_startDriving();
         }

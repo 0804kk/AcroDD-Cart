@@ -154,6 +154,7 @@ namespace AcroDD_Cart
             CreateCircle();
             CreateEqualIntervalCircle();
             CreateSquare();
+            CreateLine();
 
             listBox_path_SelectedIndexChanged(sender, e);
 

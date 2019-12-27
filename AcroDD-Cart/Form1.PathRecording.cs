@@ -42,6 +42,26 @@ namespace AcroDD_Cart
             }
             AddToPathList(pathData,"Circle");
         }
+        public void CreateLine()
+        {
+            List<double[]> pathData = new List<double[]>();
+            List<double[]> pathData2 = new List<double[]>();
+
+            double x = 0;
+            double y = 0;
+            double theta = 0;
+            for (int i = 0; i < 2; i++)
+            {
+                double[] data = new double[3] { x, y, theta };
+                pathData.Add(data);
+                x = -500;
+            }
+
+            pathData2 = ConvertEqualIntervalPath(pathData);
+            AddToPathList(pathData2, "Line_x");
+
+        }
+
         public void CreateEqualIntervalCircle()
         {
             List<double[]> pathData = new List<double[]>();
